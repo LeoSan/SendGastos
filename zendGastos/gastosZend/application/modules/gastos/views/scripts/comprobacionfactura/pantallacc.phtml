@@ -1,0 +1,87 @@
+<br>
+<div class="container">
+
+    <form class="bs-example bs-example-form">
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="idgastobuscar">Ingrese No. Caso</label>
+                <div class="input-group">
+                    <input id="idgastobuscar" type="text" class="form-control" aria-label="Ingrese el caso" placeholder="Ingrese el Caso del Gasto">
+                    <div class="input-group-btn">
+                        <button type="button" id="btnNumGasto" class="btn btn-info"> <span class="glyphicon glyphicon-search"></span> Buscar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <div id="inpTableLisResultado">
+
+    </div>
+
+</div>
+
+
+<!--Modal para Carga Masiva-->
+<div class="modal fade" id="modalReasigna" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+     aria-labelledby="modalReasignaLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close btnCerrar" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalReasignaLabel"><span id="spTitulomodal"> Abrir Caso </span> Gastos</h4>
+            </div>
+            <div class="modal-body">
+                <div class="content">
+                    <form class='bs-example bs-example-form'>
+                       <!-- Campos Hidden   -->
+                        <input id='inpHiddenUSRUIDAsigna'  type='hidden' class='form-control'/>
+                        <input id='inpUsuarioCasoUSRUID'   type='hidden' class='form-control' value="7864786345948056687c5d5046373557"/>
+
+                        <div class='row'>
+                            <div class='col-lg-10'>
+                                <div class='input-group'>
+                                    <span class='input-group-addon' id='sizing-addon2'>   <span class='glyphicon glyphicon-user'></span>   </span>
+                                    <input id='inpUsuarioCaso'         type='text'   class='form-control' placeholder='Usuario Caso' disabled="disabled" value="Leonard Cuenca"/>
+                                </div>
+                            </div>
+                        </div>
+                        </br>
+                        <div class='row'>
+                            <div class='col-lg-10'>
+                                <div class='input-group'>
+                                    <span class='input-group-addon' id='sizing-addon2'> <span class='glyphicon glyphicon-screenshot'></span> </span>
+                                    <input id='inpUsuarioAsigna' type='text' class='form-control' placeholder='Usuario Asigna' aria-describedby='sizing-addon2'>
+                                </div>
+                            </div>
+                        </div>
+                        </br>
+                        <div class='row'>
+                            <div class='col-lg-10'>
+                                <div class='input-group'>
+                                    <span class='input-group-addon' id='sizing-addon2'>  <span class='glyphicon glyphicon-tag'></span> </span>
+                                    <input id='inpNota' type='text' class='form-control' placeholder='Nota' aria-describedby='sizing-addon2'>
+                                </div>
+                            </div>
+                        </div>
+                        </br>
+
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btnCerrar" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+                <button id='btnGuardar' type='button' class='btn btn-success'>Guardar y Abrir Caso</button><br>
+                <span class="label-oblig-desc"> Lo campos con asteriscos(*) son obligatorios </span>
+                <span class="label-oblig-desc msjRespuestaMasiva text-center"> </span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/js/gastos/proc-caso-abrir-cancelaciones.js"></script>

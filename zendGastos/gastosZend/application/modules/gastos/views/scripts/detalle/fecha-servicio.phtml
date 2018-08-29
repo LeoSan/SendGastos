@@ -1,0 +1,105 @@
+<link rel="stylesheet" media="screen" href="<?php echo $this->baseUrl; ?>/lib/bootstrap_3_3/css/bootstrap.min.css">
+<link rel="stylesheet" media="screen" href="<?php echo $this->baseUrl; ?>/lib/bootstrap_3_3/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/jqgrid_5.1.1/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/bootstrap_3_3/js/bootstrap.min.js"></script>
+
+<style>
+.subtitle {
+	background-color: aliceblue;
+    border: 1px solid #f2f2f2;
+    padding: 3px;
+	font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.subparte { margin-bottom: 12px; }
+.glyphicon { padding: 3px; }
+.right { text-align: right; }
+.center { text-align: center; }
+body {
+    font-size: 12px;
+	background-color: #fdfdff;
+}
+.table { font-size: 14px!important; margin-bottom: 0;}
+.table td, .table>thead:first-child>tr:first-child>th { font-size: 12px!important; }
+.encabezado {
+	margin-bottom: 18px;
+    border-bottom: 1px solid #ccc;
+}
+</style>
+<?php 
+     function dateToSpanish($date) {
+     	$date = strtoupper($date);
+     	$date = str_replace('JAN', 'Ene', $date);
+     	$date = str_replace('APR', 'Abr', $date);
+     	$date = str_replace('JUL', 'Jul', $date);
+     	$date = str_replace('SEP', 'Sep', $date);
+     	$date = str_replace('OCT', 'Oct', $date);
+     	$date = str_replace('NOV', 'Nov', $date);
+     	$date = str_replace('DEC', 'Dic', $date);
+     	return $date;
+     }
+     function numberToMoneda($number){
+     	if( is_numeric($number) ) {
+     		return '$'.number_format($number,2,'.',',');
+     	} else {
+     		return $number;
+     	}
+     }
+?>
+
+<div class="container">
+	<!-- BEGIN: Detalle PgoServ -->
+	<?php
+		$open = '';
+		$clos = 'style="display: none;"';
+    	if( count($this->pagoservicio) == 0 ) {
+    		$open = 'style="display: none;"';
+    		$clos = '';
+    	}
+    ?>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subtitle" id="sub_5">
+  		<span class="iconp_5 glyphicon glyphicon-plus" <?=$clos?> aria-hidden="true"></span>
+  		<span class="iconm_5 glyphicon glyphicon-minus" <?=$open?> aria-hidden="true"></span>
+  			Detalle : Pago de servicio 
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subpart_5" <?=$open?> >
+		<table class="table table-striped table-bordered table-hover">
+    		<thead><tr><th>Crédito</th>
+    		 		   <th>Factura</th>
+    		 		   <th>Importe</th>
+    		 		   <th>Fecha real de pago</th>
+    		 		   <th>Remesa</th>
+    		 		   <th>Servicio pagado del</th>
+    		 		   <th>Servicio pagado al</th>
+    		 		   <th>Pagado previamente</th>
+    		 		   <th>Fecha próximo pago</th>
+    		 		   <th style="width: 12%;">Comentarios</th>
+    		</thead>
+    		<tbody>
+    		<?php
+    		if( count($this->pagoservicio) == 0 ) {
+    			echo '<tr><td class="center" colspan="10">Sin datos</td></tr>';
+    		} else {
+    		foreach ($this->pagoservicio as $value) { ?>
+    			<tr><td><?=$value['CREDITO']?></td>
+    		        <td><?=$value['FCNOFACTURA']?></td>
+    		        <td class="right"><?=numberToMoneda($value['FNIMPORTECOMPROBA'])?></td>
+    		        <td><?=$value['FECREALPAGO']?></td>
+    		        <td><?=$value['FCREMESA']?></td>
+    		        <td><?=$value['FECSERVPAGADODEL']?></td>
+    		        <td><?=$value['FECSERVPAGADOAL']?></td>
+    		        <td><?=$value['FCPAGADOPREVIAMENTE']?></td>
+    		        <td><?=$value['FECCUMBREPAGO']?></td>
+    		        <td><?=utf8_decode( $value['FCCOMENTARIOPAGOSERV'] )?></td>
+    			</tr>
+    	 	<?php 
+    		} }?>
+    		</tbody>
+  		</table>
+	</div>
+	<!-- END: Detalle PgoServ --> 
+</div>

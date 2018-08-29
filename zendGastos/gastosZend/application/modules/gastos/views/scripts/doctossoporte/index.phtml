@@ -1,0 +1,88 @@
+﻿<!-- Modal Asignar  -->
+<div id="modalAsignar" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalAsignarLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalAsignarLabel" style="font-size: 18px;"><i class="icon-list-alt" style="margin-top: 2px;"></i> Agregar cuentas al documento</h3>
+  </div>
+  <div class="modal-body">
+  	<form id="frmDoctosSoporte" name="frmDoctosSoporte" class="form-horizontal">
+	  <div class="control-group" style="margin-bottom: 5px;" >
+	    <label class="control-label" for="archivo">Archivo</label>
+	    <div class="controls">
+	      <input type="file" name="file_upload_soporte" id="file_upload_soporte" />
+	  	    <input type="hidden" name="archivo_soporte" id="archivo_soporte" value="" />
+	  	    <input type="hidden" name="consecutivo" id="consecutivo" value="" />
+	  	    <input type="hidden" name="indice" id="indice" value="" />
+	  	    <input type="hidden" name="origen" id="origen" value="2" />
+	  	    <input type="hidden" name="nmdocumento" id="nmdocumento" value="" />
+	    </div>
+	  </div>
+	  <div id="msjErrorUpload" class="alert alert-error" style="display:none;">
+	  </div>
+	  <div id="msjSuccessUpload" class="alert alert-success" style="display:none;">
+	  </div>
+	</form>
+	<div id="listaCreditosdocumentossoporte">
+	</div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button id="btnAgregarCreditosSop" class="btn btn-primary">Agregar</button>
+  </div>
+</div>
+<!-- End Modal Asignar -->
+<!-- Modal Asignar LW  -->
+<div id="modalAsignarLw" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalAsignarLwLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalAsignarLwLabel" style="font-size: 18px;"><i class="icon-list-alt" style="margin-top: 2px;"></i> Asignar documento a la cuenta desde LW </h3>
+  </div>
+  <div class="modal-body" style="padding-top: 1px;margin-top: -14px;max-height: 280px;">
+  	<form id="frmDoctosLw" name="frmDoctosLw" class="form-horizontal">
+	  	<input type="hidden" name="consecutivoLw" id="consecutivoLw" value="" />
+	  	<input type="hidden" name="nmdocumentoLw" id="nmdocumentoLw" value="" />
+	  	<input type="hidden" name="origen" id="origen" value="1" />
+	</form>
+  	<div id="listaCreditosLw">
+	</div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button id="btnAsignarCreditosLwSop" class="btn btn-primary">Agregar</button>
+  </div>
+</div>
+<!-- End Modal Asignar LW -->
+<div class="content-doctossoporte" id="catalogo-content">
+	<input type="hidden" id="solicitudid" name="solicitudid" value="<?php echo $this->solicitudid; ?>" >
+	<input type="hidden" id="empleadoid" name="empleadoid" value="<?php echo $this->empleadoid; ?>" >
+	<input type="hidden" id="tipocaptura" name="tipocaptura" value="<?php echo $this->tipocaptura; ?>" >
+	<div class="row-fluid">
+		<div class="span12" id="lista-doctossoporte">
+			<table class="table table-bordered">
+				<thead>
+			    	<tr>
+			      		<th>Categoría/Subcategoría</th>
+			      		<th>Concepto</th>
+			      		<th>Cuenta/Cartera/Concepto</th>
+			      		<th>Acciones</th>
+			    	</tr>
+			  	</thead>
+			  	<tbody>
+<!--			    	<tr>-->
+<!--			      		<td>Cat->GASTOS ADMINISTRACIÓN<BR>Subcat->ALMACENAMIENTO Y DIGITALIZACIÓN</td>-->
+<!--			      		<td>CONCEPTODIGITALIZACIÓN DE EXPEDIENTES</td>-->
+<!--			      		<td>000000000000001<BR>JUAN JOSÉ LÓPEZ TORRES</td>-->
+<!--			      		<td><a href="#" >X1</a><a href="#">X5</a><i class="icon-remove " style="margin-top: 9px;"></td>-->
+<!--			    	</tr>-->
+			  	</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span6">
+		</div>
+		<div class="span6" style="padding-left: 480px;text-align: right;">
+<!--			<button class="btn btn-success" id="bntGuardarComprobacion" name="bntGuardarComprobacion">Guardar</button>-->
+		</div>
+	</div>
+</div>

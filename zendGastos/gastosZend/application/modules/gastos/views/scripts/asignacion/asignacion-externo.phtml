@@ -1,0 +1,233 @@
+﻿<!-- Modal Alta Masiva Créditos ----- 3 -->
+<div id="capaExternosGastos">
+<div id="modalAltaMasiva" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalAltaMasivaLabel" aria-hidden="true" style="left: 45%; width: 700px;top: 2%;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalAltaMasivaLabel"><i class="icon-list-alt" ></i> Alta masiva de cuentas</h3>
+  	<div class="loading-search" style="display:none;position: absolute;right: right: 130px;width: 200px;top: 21px;"><img alt="Cargando..." src="<?php echo $this->baseUrl; ?>/images/loading.gif" width="600px" height="390px" ></div>
+  	<a class="btn btn-primary" id="btnConceptosValidos" style="position: absolute;top: 12px;left: 528px;" ><i class="icon-book icon-white" style="margin-top: 0px;"></i> Mis conceptos</a>
+  </div>
+  <div class="modal-body">
+  	<form id="frmAltaMasiva" name="frmAltaMasiva" class="form-horizontal">
+	  <div class="control-group" style="margin-bottom: 5px;" >
+	    <h3 id="concepetoSeleccionadoLabel"></h3>
+	  </div>
+	  <div id="muestaConceptosValidos" class="alert alert-block alert-info fade in" style="position: absolute;left: 400px;top: 35px;padding: 8px 5px 8px 1px;color: #050505;background-color: #d0d0d0;border-color: #D0D0F4;display:none;" >
+        <ul>
+        	<?php foreach ($this->misconceptos as $item): ?>
+        	<li><strong><?php echo $item['IDCONCEPTO']; ?> - </strong><?php echo $item['NMCONCEPTO']; ?></li>
+        	<?php endforeach; ?>
+        </ul>
+	</div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="file_upload" style="width: 115px;">1) Carga archivo</label>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;padding-left: 167px;">
+	  	    <input type="file" name="file_upload" id="file_upload" />
+	  	    <input type="hidden" name="archivo" id="archivo" value="" />
+	  	    <input type="hidden" name="verificado" id="verificado" value="N" />
+	  	    <input type="hidden" name="procesado" id="procesado" value="N" />
+	  </div>
+	   <div id="msjErrorUploadError" class="alert alert-error" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		Error al subir archivo
+	  </div>
+	  <div id="msjErrorUploadSuccess" class="alert alert-success" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		El archivo archivo.csv se cargó correctamente!
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;padding-left: 55px;">
+	    <label>NOTA: Instrucciones de la carga de archivo.</label>
+	    <span class="help-block">El archivo debe ser CSV delimitado por COMAS. Sólo debe tener cuenta e importe.</span>
+	    <span class="help-block">El nombre del archivo NO debe tener caracteres especiales, Ñ, ñ, epacios.</span>
+	    <span class="help-block">El tamaño del nommbre del archivo NO debe revasar los 15 caracteres.</span>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="importe">2) Validación de archivo</label>
+	    <div class="controls">
+	      <button id="verificacionAltMas" name="verificacionAltMas" class="btn btn-primary" type="button" style="background-image: -webkit-linear-gradient(top,#343467,#343467);background-color: #343467;">Verificación</button>
+	    </div>
+	  </div>
+	  <div id="msjErrorValidaError" class="alert alert-error" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		Error al subir archivo
+	  </div>
+	  <div id="msjErrorValidaSuccess" class="alert alert-success" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		Error al subir archivo
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;padding-left: 35px;">
+	    <label>NOTA: Resultado de la verificación.</label>
+	    <span class="help-block">Error Sí la información es incorrecta en formato.</span>
+	    <span class="help-block">Error Sí los valores de los conceptos son erroneos.</span>
+	    <span class="help-block">Error Sí un crédito es INVALIDO.</span>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="importe" style="width: 175px;">3) Procesando las cuentas</label>
+	    <div class="controls">
+	      <button id="procesamientoAltMas" name="procesamientoAltMas" class="btn btn-primary" type="button">Procesamiento</button>
+	    </div>
+	  </div>
+	  <div id="msjErrorProcesaError" class="alert alert-error" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		Error al subir archivo
+	  </div>
+	  <div id="msjErrorProcesaSuccess" class="alert alert-success" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		Error al subir archivo
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;padding-left: 75px;">
+	    <span class="help-block">Estatus:</span>
+	    <span class="help-block">Total registros:</span>
+	    <span class="help-block">Correctos:</span>
+	    <span class="help-block">Incorrectos:</span>
+	  </div>
+	</form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button id="btnFinalizarAltaMasiva" name="btnFinalizarAltaMasiva" class="btn btn-primary">Finalizar</button>
+  </div>
+</div>
+
+<!-- End Modal Alta Masiva Créditos -->
+<div class="content-asignacion" id="catalogo-content">
+	<div class="row-fluid">
+		<div class="span6">
+			<form class="form-horizontal" id="frmAsignacion" name="frmAsignacion">
+				<input type="hidden" id="empleadoid" name="empleadoid" value="<?php echo $this->empleadoid; ?>">
+				<input type="hidden" id="solicitudid" name="solicitudid" value="<?php echo $this->solicitudid; ?>">
+				<input type="hidden" id="tiposolicitud" name="tiposolicitud" value="<?php echo $this->tiposolicitud; ?>">
+				<input type="hidden" id="tipocaptura" name="tipocaptura" value="<?php echo $this->tipocaptura; ?>">
+				<input type="hidden" id="puestoid" name="puestoid" value="<?php echo $this->puestoid; ?>">
+				<input type="hidden" id="usuariopm" name="usuariopm" value="<?php echo $this->usuariopm; ?>">
+				<input type="hidden" id="appuid" name="appuid" value="<?php echo $this->appuid; ?>">
+				<input type="hidden" id="conceptoactual" name="conceptoactual" value="<?php echo $this->miconcepto; ?>">
+				<input type="hidden" id="hidecredito" name="credito" >
+				<input type="hidden" id="hidesupercve" name="cvesupervisor" >
+				<input type="hidden" id="hidesupernum" name="numsupervisor" >
+				<input type="hidden" id="hidesupermail" name="emailsupervisor" >
+			  <div class="control-group" style="margin-bottom: 5px;">
+			    <label class="control-label" for="categoría">Categoría</label>
+			    <div class="controls">
+			      <select id="categoria" name="categoria" <?php echo ($this->tipocaptura == "3")?'disabled':'' ?>>
+					<option value="0">-Seleccione-</option>
+					<?php foreach ($this->categorias as $item): ?>
+					<option value="<?php echo $item['IDVALOR']; ?>"><?php echo $item['NMVALOR']; ?></option>
+					<?php endforeach; ?>
+				  </select>
+			    </div>
+			  </div>
+			  <div class="control-group" style="margin-bottom: 5px;">
+			    <label class="control-label" for="conceptoBuscar">Búsqueda de concepto</label>
+			    <div class="controls">
+			      <input type="text" id="conceptoBuscar" name="conceptoBuscar" placeholder="Concepto a buscar" <?php echo ($this->tipocaptura == "3")?'disabled':'' ?> class="input-medium">
+			      <button type="button" id="btnBuscarConcepto" name="btnBuscarConcepto" class="btn btn-primary" style="width: 54px;padding: 5px 10px;">Buscar</button>
+			    </div>
+			  </div>
+			  <div class="control-group" style="margin-bottom: 5px;">
+			    <label class="control-label" for="conceptoid">Concepto</label>
+			    <div class="controls">
+			      <select id="conceptoid" name="conceptoid" <?php echo ($this->tipocaptura == "3")?'disabled':'' ?>>
+					<option value="0">-Seleccione-</option>
+					</select>
+			    </div>
+			  </div>
+
+
+			<div class="control-group" style="margin-bottom: 5px;">
+				<label class="control-label" for="credito">Cuentas</label>
+				<div class="controls">
+					<input type="text" id="findcredito" name="findcredito" maxlength="25" placeholder="Crédito">
+				</div>
+				<label class="control-label" for="acreditado">Acreditado</label>
+				<div class="controls">
+					<input type="text" id="findAcreditado" name="acreditado" maxlength="50" placeholder="Acreditado">
+				</div>
+				<button type="button" id="btnBuscarCredito" name="btnBuscarCredito" class="btn btn-primary" style="width: 54px;padding: 5px 10px;float: right;margin-right: 60px;">Buscar</button>
+			</div> 
+
+
+			  <div class="control-group" style="margin-bottom: 5px;">
+			    <label class="control-label" for="cartera">Juicios : </label>
+			    <div class="controls">
+			      <select id="cbjuicio" name="cbjuicio" <?php echo ($this->tipocaptura == "2" || $this->tipocaptura == "3" || $this->tipocaptura == "42")?'disabled':'' ?>>
+					<option value="0">-Seleccione-</option>
+					<?php //foreach ($this->carteras as $item): ?>
+					<option value="<?php //echo $item['IDVALOR']; ?>"><?php //echo $item['NMVALOR']; ?></option>
+					<?php //endforeach; ?>
+					</select>
+			    </div>
+			  </div>
+			  <div class="control-group" style="margin-bottom: 5px;">
+			    <label class="control-label" for="credito">Cuentas</label>
+			    <div class="controls">
+			      <input type="text" id="txtjuicio" name="txtjuicio" maxlength="25" placeholder="Cuenta" <?php echo ($this->tipocaptura == "3" || $this->tipocaptura == "4" || $this->tipocaptura == "42" || $this->tipocaptura == "50")?'disabled':'' ?>>
+			    </div>
+			  </div>
+			  <div class="control-group" style="margin-bottom: 5px;">
+			    <label class="control-label" for="supervisor">Supervisor</label>
+			    <div class="controls">
+			      <input type="text" id="superv" class="input-xlarge" name="superv" maxlength="99" placeholder="Supervisor" <?php echo ($this->tipocaptura == "3" || $this->tipocaptura == "4" || $this->tipocaptura == "42" || $this->tipocaptura == "50")?'disabled':'' ?>>
+			    </div>
+			  </div>
+			  <div class="control-group" style="margin-bottom: 5px;">
+			    <label class="control-label" for="acreditado">Acreditado</label>
+			    <div class="controls">
+			      <input type="text" id="nom_acredi" class="input-xlarge" name="acredi" maxlength="99" placeholder="Acreditado" <?php echo ($this->tipocaptura == "3" || $this->tipocaptura == "4" || $this->tipocaptura == "42" || $this->tipocaptura == "50")?'disabled':'' ?>>
+			    </div>
+			  </div>
+			  <div class="control-group" style="margin-bottom: 5px;">
+			    <label class="control-label" for="importe" >Importe sin IVA</label>
+			    <div class="controls">
+			      <input type="text" id="importe" name="importe" maxlength="12" placeholder="Importe" <?php echo ($this->tipocaptura == "3")?'disabled':'' ?>>
+			    </div>
+			  </div>
+			</form>
+		
+		
+		</div>
+		<div class="span6" >
+			<form class="form-horizontal" id="frmAsignacion2" name="frmAsignacion2">
+			  <div class="control-group" style="margin-bottom: 5px;">
+			    <label class="control-label" for="subcategoria">Subcategoría</label>
+			    <div class="controls">
+			      <select id="subcategoria" name="subcategoria" <?php echo ($this->tipocaptura == "3")?'disabled':'' ?>>
+					<option value="0">-Seleccione-</option>
+					</select>
+			    </div>
+			  </div>
+			  <br>
+			  <br>
+			  <br>
+			  <br>
+			  <div class="control-group" style="margin-bottom: 5px;">
+			    <label class="control-label" for="gccosto">Grupo centro costo</label>
+			    <div class="controls">
+			      <select id="gccosto" name="gccosto" <?php echo ($this->tipocaptura == "2" || $this->tipocaptura == "3" || $this->tipocaptura == "50")?'disabled':'' ?> >
+					<option value="0">-Seleccione-</option>
+					<?php foreach ($this->catcentrocosto as $item): ?>
+					<option value="<?php echo $item['IDCATEGORIA']; ?>"><?php echo $item['NMCATEGORIA']; ?></option>
+					<?php endforeach; ?>
+					</select>
+			    </div>
+			  </div>
+			  <div class="control-group" style="margin-bottom: 5px;">
+			    <label class="control-label" for="ccosto">Centro costo</label>
+			    <div class="controls">
+			      <select id="ccosto" name="ccosto" <?php echo ($this->tipocaptura == "2" || $this->tipocaptura == "3" || $this->tipocaptura == "50")?'disabled':'' ?>>
+					<option value="0">-Seleccione-</option>
+					</select>
+			    </div>
+			  </div>
+			</form>
+			<button class="btn btn-large btn-primary" id="btnAgregarAsignacion" name="btnAgregarAsignacion">Agregar</button>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12" id="lista-asignaciones">
+			
+		</div>
+	</div>
+</div>
+</div>

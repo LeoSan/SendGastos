@@ -1,0 +1,381 @@
+<style>
+#archivo{ background-color: #ffffff !important; }
+.hasDatepicker {
+	background-color: white!important;
+    cursor: pointer!important;
+}
+.inner-addon { position: relative; }
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 4px;
+  pointer-events: none;
+  top: 7px;
+}
+.left-addon .glyphicon  { left:  6px;}
+.right-addon .glyphicon { right: 0px;}
+.left-addon input  { padding-left:  24px; width: 188px; }
+.right-addon input { padding-right: 30px; }
+</style>
+<br>
+<input type="hidden" id="numcompro" value="<?=$this->numcompro?>"/>
+
+<div id="modalSubirXmlSeg" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalSubirXmlSegLabel" aria-hidden="true" style="left: 45%; width: 700px;top: 2%;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalSubirXmlSegLabel" style="font-size: 17.5px;font-weight: bold;">Subir comprobantes fiscales XML<span id="lblXmlSegName"></span></h3>
+  	<div class="loading-search" style="display:none;position: absolute;right: right: 130px;width: 200px;top: 21px;"><img alt="Cargando..." src="<?php echo $this->baseUrl; ?>/images/loading.gif" width="600px" height="390px" ></div>
+  </div>
+  <div class="modal-body">
+  	<div class="panel-body">
+			<div class="container-fluid">
+		        <div class="row">
+		        	<div class="span12">
+		        		<form class="form-inline">
+		        			<div class="form-group">
+		        			<div class="span12">
+								<input type="file" name="file_XmlSeg" id="file_XmlSeg" />
+							</div>
+					  	    <input type="hidden" name="comprobacionIdXmlSeg" id="comprobacionIdXmlSeg" />
+							<div class="span12" style="margin-bottom: 5px;">
+								<div id="alertUpd" class="alert alert-error hide"><strong>Alerta!</strong> <span id="msgAlert"></span></div>
+							</div>
+							</div>
+						</form>
+		        	</div>
+		        </div>
+			</div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+  </div>
+</div>
+
+<div id="modalSubirPdf" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalSubirPdfLabel" aria-hidden="true" style="left: 45%; width: 700px;top: 2%;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalSubirPdfLabel" style="font-size: 17.5px;font-weight: bold;">Subir comprobantes fiscales PDF<span id="lblPdfName"></span></h3>
+  	<div class="loading-search" style="display:none;position: absolute;right: right: 130px;width: 200px;top: 21px;"><img alt="Cargando..." src="<?php echo $this->baseUrl; ?>/images/loading.gif" width="600px" height="390px" ></div>
+  </div>
+  <div class="modal-body">
+  	<div class="panel-body">
+			<div class="container-fluid">
+		        <div class="row">
+		        	<div class="span12">
+		        		<form class="form-inline">
+							<input type="file" name="file_pdf" id="file_pdf" />
+					  	    <input type="hidden" name="archivoPdf" id="archivoPdf" />
+					  	    <input type="hidden" name="comprobacionId" id="comprobacionId" />
+						</form>
+		        	</div>
+		        </div>
+			</div>
+		</div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Aceptar</button>
+    <!-- <button id="btnSubirPdf" name="btnSubirPdf" class="btn btn-primary">Agregar</button> -->
+  </div>
+</div>
+
+<div id="modalSubirPdfC" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalSubirPdfLabel" aria-hidden="true" style="left: 45%; width: 700px;top: 2%;">
+  	<div class="modal-header">
+    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    	<h3 id="modalSubirPdfLabelC" style="font-size: 17.5px;font-weight: bold;">Subir comprobantes PDF<span id="lblPdfNameC"></span></h3>
+  		<div class="loading-search" style="display:none;position: absolute;right: right: 130px;width: 200px;top: 21px;"><img alt="Cargando..." src="<?php echo $this->baseUrl; ?>/images/loading.gif" width="600px" height="390px" ></div>
+  	</div>
+  	<div class="modal-body">
+  		<div class="panel-body">
+			<div class="container-fluid">
+		    	<div class="row">
+		        	<div class="span12">
+		        		<form class="form-inline">
+							<input type="file" name="file_pdfc" id="file_pdfc" />
+					  	    <input type="hidden" name="archivoPdfC" id="archivoPdfC" />
+					  	    <input type="hidden" name="comprobacionIdC" id="comprobacionIdC" />
+						</form>
+		        	</div>
+		        </div>
+			</div>
+		</div>
+  	</div>
+  	<div class="modal-footer">
+    	<button class="btn" data-dismiss="modal" aria-hidden="true">Aceptar</button>
+  	</div>
+</div>
+
+<!-- Modal Resultado carga de XML -->
+<div id="modalResXml" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalResXmlLabel" aria-hidden="true" style="left: 45%; width: 700px;top: 2%;">
+	<div class="modal-header">
+    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    	<h3 id="modalAltaMasivaLabel" style="font-size: 17.5px;font-weight: bold;">Información archivo XML <span id="lblXmlName"></span></h3>
+  		<div class="loading-search" style="display:none;position: absolute;right: right: 130px;width: 200px;top: 21px;"><img alt="Cargando..." src="<?php echo $this->baseUrl; ?>/images/loading.gif" width="600px" height="390px" ></div>
+  	</div>
+  	<div class="modal-body"></div>
+  	<div class="modal-footer">
+    	<button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    	<button id="btnGetValXml" name="btnGetValXml" class="btn btn-primary">Agregar</button>
+  	</div>
+</div>
+
+<!-- End Resultado carga de XML -->
+<div class="container-fluid" id="catalogo-content"><!-- Container -->
+	<div class="panel panel-info">
+	
+		<div class="panel-heading">
+	      <h4>Empresa a facturar: <?php echo $this->rfcEmpresa; ?> - <?php echo $this->nombreEmpresa; ?></h4>
+	    </div>
+		<div class="panel-body">
+			<?php if( $this->numcompro=='0' || $this->numcompro=='2' ){?>
+			<div class="container-fluid">
+		        <div class="row">
+		        	<div class="span12">
+		        		<div class="row-fluid">
+							<div class="span6">
+								<form class="form-inline">
+								  <label class="checkbox" for="archivoName">
+								    Tipo de comprobante
+								  </label>
+								  <select id="tipoComprobante" name="tipoComprobante" >
+										<option value="0"> - Seleccione - </option>
+										<option value="Factura"> Factura </option>
+										<option value="Recibo de honorarios"> Recibo de Honorarios</option>
+										<option value="Comprobante"> Comprobante</option>
+										<option value="Ficha de Deposito"> Ficha de Dep&oacute;sito</option>
+										<option value="Descuento de nomina"> Descuento de N&oacute;mina</option>
+										<option value="Devolucion tarjeta corporativa"> Devoluci&oacute;n Tarjeta Corporativa </option>
+									</select>
+								</form>
+							</div>
+							<div class="span6">
+								<form class="form-inline examinar" style="display:none;">
+									<input type="file" name="file_xml" id="file_xml" />
+						  	    	<input type="hidden" name="archivoXml" id="archivoXml" />
+								</form>
+							</div>
+						</div>
+		        	</div>
+		        </div>
+			</div>
+			<?php } ?>
+		</div>
+	</div>
+</div> <!-- End Container -->
+
+<div class="container-fluid sinxml" id="catalogo-content" style="display:none;"><!-- Container -->
+	<div class="panel panel-info">
+	
+		<div class="alert alert-warning alert-dismissable fade in hide">
+    		<div id="txtmsg"></div>
+  		</div>
+	
+		<div class="panel-body">
+			<div class="container-fluid">	
+				<div class="row-fluid">
+					<div class="span6">
+						<form class="form-horizontal" id="frmAsignacion" name="frmAsignacion">
+							<input type="hidden" id="empleadoid" name="empleadoid" value="<?php echo $this->userid; ?>">
+							<input type="hidden" id="solicitudid" name="solicitudid" value="<?php echo $this->solicitudid; ?>">
+							<input type="hidden" id="uuid" name="uuid">
+							<input type="hidden" id="nombreArchivo" name="nombreArchivo">
+							<input type="hidden" id="idEmpresa" name="idEmpresa" value="<?php echo $this->idEmpresa; ?>">
+							<input type="hidden" id="rfcEmpresa" name="rfcEmpresa" value="<?php echo $this->rfcEmpresa; ?>">
+							<input type="hidden" id="nombreEmpresa" name="nombreEmpresa" value="<?php echo $this->nombreEmpresa; ?>">
+							<input type="hidden" id="idProveedor" name="idProveedor" value="<?php echo $this->idProveedor; ?>">
+							<input type="hidden" id="rfcProveedor" name="rfcProveedor" value="<?php echo $this->rfcProveedor; ?>">
+							<input type="hidden" id="nombreProveedor" name="nombreProveedor" value="<?php echo $this->nombreProveedor; ?>">
+						    <div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="conceptoBuscar"></label>
+						  	</div>
+						  
+						  	<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="fechaFactura">Fecha</label>
+						    	<div class="controls inner-addon left-addon">
+						      		<i class="glyphicon icon-calendar"></i>
+						      		<input type="text" id="fechaFactura" name="fechaFactura" maxlength="16" placeholder="Fecha" readonly>
+						    	</div>
+						  	</div>
+						  	<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="credito">Concepto</label>
+						    	<div class="controls">
+						      		<input type="text" id="concepto" name="concepto" maxlength="250" placeholder="Concepto" >
+						    	</div>
+						  	</div>
+						  	<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="cartera">Serie/Folio</label>
+						    	<div class="controls">
+						      		<input type="text" id="seriefolio" name="seriefolio" maxlength="20" placeholder="Serie/Folio" >
+						    	</div>
+						  	</div>
+						  	<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="proveedor">Proveedor</label>
+						    	<div class="controls">
+						      		<input type="text" id="proveedor" name="proveedor" maxlength="250" placeholder="Proveedor" >
+						    	</div>
+						  	</div>
+						  	<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="rfc">RFC</label>
+						    	<div class="controls">
+							      	<input type="text" id="rfc" name="rfc" maxlength="13" placeholder="RFC" >
+						    	</div>
+						  	</div> 
+						</form>
+					</div>
+					
+					<div class="span6" >
+						<form class="form-horizontal" id="frmAsignacion2" name="frmAsignacion2">
+							<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="importe">Importe</label>
+						    	<div class="controls">
+						      		<input type="number" id="importe" name="importe" min="0" maxlength="120" placeholder="Importe" >
+						    	</div>
+						  	</div>
+						  	<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="iva">% IVA</label>
+						    	<div class="controls">
+							    	<select id="iva" name="iva" >
+										<option value="0"> -Sin IVA - </option>
+										<option value="16"> 16 </option>
+									</select>
+								</div>
+						  	</div>
+						  	<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="importeIva">Importe IVA</label>
+						    	<div class="controls">
+							      	<input type="number" id="importeIva" name="importeIva" min="0" maxlength="20" placeholder="Importe IVA" >
+						    	</div>
+						  	</div>
+						  	<div class="control-group eshonorarios" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="ivaRetenido">IVA retenido</label>
+						    	<div class="controls">
+							      	<input type="number" id="ivaRetenido" name="ivaRetenido" min="0" maxlength="20" placeholder="Iva Retenido" >
+						    	</div>
+						  	</div>
+						  	<div class="control-group eshonorarios" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="isr">ISR</label>
+						    	<div class="controls">
+							      	<input type="number" id="isr" name="isr" min="0" maxlength="20" placeholder="ISR" >
+						    	</div>
+						  	</div>
+						  	<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="otrosImpuestos">Otros impuestos</label>
+						    	<div class="controls">
+							      	<input type="number" id="otrosImpuestos" name="otrosImpuestos" maxlength="20" placeholder="Otros impuestos" >
+						    	</div>
+						  	</div>
+						  	<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="descuento-importe">Descuento afecta importe</label>
+							    <div class="controls">
+							      	<input type="number" id="descuentoimporte" name="descuentoimporte" maxlength="20" placeholder="Descuento afecta importe" >
+							    </div>
+							</div>
+						  	<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="descuento-no-importe">Descuento no afecta importe</label>
+						    	<div class="controls">
+							      	<input type="number" id="descuentonoimporte" name="descuentonoimporte" maxlength="20" placeholder="Descuento que no afecta importe" >
+						    	</div>
+						  	</div>
+						  	<div class="control-group" style="margin-bottom: 5px;">
+						    	<label class="control-label" for="total">Total</label>
+						    	<div class="controls">
+							      	<input type="number" id="total" name="total" min="0" maxlength="20" placeholder="Total" readonly>
+						    	</div>
+						  	</div>
+						  	<div class="control-group" style="margin-bottom: 5px;">
+								<button type="button" class="btn btn-large btn-primary" id="btnAgregarComprobante" name="btnAgregarComprobante">Agregar</button>  
+						  	</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> <!-- End Container -->
+
+<div id="catalogo-content"><!-- Container -->
+	<div class="row-fluid">
+		<div class="span12" id="datos-factura"></div>
+	</div>
+</div> <!-- End Container -->
+
+<?php if($this->numcompro=='0' || $this->numcompro=='1' || $this->numcompro=='3' ){
+	if(count($this->array_alertas)> 0){
+		?>
+		<div class="container-fluid" id="catalogo-content"><!-- Container -->
+			<div class="panel panel-info">
+				<div class="panel-body">
+					<div class="container-fluid">
+						<div class="row-fluid">
+							<div class="span12" id="datos-alerta">
+								<table class="table table-bordered">
+									<thead>
+									<tr style="background-color: #343467;color: #FFF;">
+										<th colspan="10">
+											Alertas
+										</th>
+									</tr>
+									<tr>
+										<td>Cuenta</td>
+										<td>Juicio</td>
+										<td>Categoría</td>
+										<td>Subcategoría</td>
+										<td>Concepto</td>
+										<td>Fecha de autorizacion</td>
+										<td>Fecha de termino de etapa</td>
+										<td>Etapa</td>
+										<td>Justificación</td>
+										<td>Alerta</td>
+									</tr>
+									</thead>
+									<tbody>
+									<?php
+									if(count($this->array_alertas)> 0){
+										foreach ($this->array_alertas as $ind=>$aa){
+											?>
+											<tr>
+												<td><?php echo $aa['CREDITO']?></td>
+												<td><?php echo $aa['JUICIO']?></td>
+												<td><?php echo $aa['CATEGORIA']?></td>
+												<td><?php echo $aa['SUBCATEGORIA']?></td>
+												<td><?php echo $aa['CONCEPTO']?></td>
+												<td><?php echo $aa['FECHA_AUTORIZACION']?></td>
+												<td><?php echo $aa['FECHA_TERMINO_ETAPA']?></td>
+												<td><?php echo $aa['NUMERO_ETAPA']?></td>
+												<td style="text-align: center">
+													<?php
+													if($this->numcompro=='0' || $this->numcompro=='1'){
+														?>
+														<textarea name="justificacion_alerta" id="justificacion_alerta_<?php echo $ind; ?>" class="justificacionAlerta" data-idcaso="<?php echo $this->solicitudid; ?>"  data-credito="<?php echo $aa['CREDITO']; ?>" data-concepto="<?php echo $aa['IDCONCEPTO']; ?>"  data-etapa="<?php echo $aa['NUMERO_ETAPA']; ?>" data-spantarget="#span-message-<?php echo $ind; ?>" data-spantargeterror="#span-message-error-<?php echo $ind; ?>"><?php echo trim((isset($aa['JUSTIFICACIONES'][$aa['NUMERO_ETAPA']]))?$aa['JUSTIFICACIONES'][$aa['NUMERO_ETAPA']]:''); ?></textarea>
+														<span id="span-message-<?php echo $ind; ?>" style="color: green;background-color: #CE8;border-radius: 5px;padding: 5px;display: none"></span>
+														<span id="span-message-error-<?php echo $ind; ?>" style="color: #fff;background-color: red;border-radius: 5px;padding: 5px;display: none"></span>
+														<?php
+													}else if($this->numcompro=='3'){
+														echo trim((isset($aa['JUSTIFICACIONES'][$aa['NUMERO_ETAPA']]))?$aa['JUSTIFICACIONES'][$aa['NUMERO_ETAPA']]:'');
+													}
+													?>
+												</td>
+												<td><b><?php echo $aa['ALERTA']?></b></td>
+											</tr>
+											<?php
+										}
+									}else{
+										?>
+										<tr>
+											<td colspan="9" style="text-align: center"> No hay alertas</td>
+										</tr>
+										<?php
+									}
+									?>
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div> <!-- End Container -->
+	<?php }
+}?>
+
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/js/gastos/comprobacion-pantallacomproba.js?v=2.5.6"></script>

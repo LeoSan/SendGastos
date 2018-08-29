@@ -1,0 +1,42 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: ljcuenca
+ * Date: 14/11/2017
+ * Time: 04:05 PM
+ */
+?>
+<table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Caso</th>
+                  <th>Solicitante</th>
+                  <th>Comprobante</th>
+                  <th>Fact. Comprobantes </th>
+                  <th>Repoorte </th>
+                </tr>
+              </thead>
+              <tbody>
+              <?php
+
+              if ( count($this->array_busqueda) > 0 ){
+                foreach($this->array_busqueda as $key=> $filas): ?>
+                <tr>
+                  <td style="text-align: center"><?php echo $key+1; ?> </td>
+                  <td style="text-align: center"><?php echo $this->array_busqueda[$key]['CASO']; ?> </td>
+                  <td style="text-align: center"><?php echo $this->array_busqueda[$key]['NOMBRE_SOLICITANTE']; ?></td>
+                  <td style="text-align: center"><?php if ( empty($this->array_busqueda[$key]['XML_INDI']) == false ) {?> <a href="<?php echo $this->array_busqueda[$key]['XML_INDI']; ?>" target="_blank"> Ver </a>  <?php }else{ echo "NO"; } ?> </td>
+                  <td style="text-align: center"> <?php if ( empty($this->array_busqueda[$key]['REPORTE']) == false ) {?>    <a href="<?php echo $this->array_busqueda[$key]['XML_MASIVO']; ?>" target="_blank"> Ver </a>  <?php }else{ echo "NO"; } ?> </td>
+                  <td style="text-align: center"><?php echo (empty($this->array_busqueda[$key]['REPORTE']) == true )? '<span class="alert alert-danger"> No Cargo </span>':'<span class="alert alert-success"> Si Cargo </span>'; ?></td>
+                </tr>
+              <?php endforeach;  ?>
+              <?php }else{   ?>
+              <tr>
+                  <td colspan="8"> No hay Data </td>
+              </tr>
+
+              <?php }  ?>
+              </tbody>
+            </table>
+

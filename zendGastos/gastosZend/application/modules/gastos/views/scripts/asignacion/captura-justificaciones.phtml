@@ -1,0 +1,195 @@
+<style>
+div.separador_gastos {
+    border: 1px solid #B0CBEF;
+    background-color: #DDDDDD;
+    font-size: 9pt;
+    font-weight: bold;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    margin: 5px 0 5px 0px;
+    padding: 5px 0px;
+}
+.colapsar,.mostrar {
+    background-color: #FFFFFF;
+    padding: 0 5px 0 5px;
+    margin: 2px 2px 2px 2px;
+    font-size: 11pt;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    clear: none;
+    cursor: pointer;
+}
+.table th {
+   font-size: 11px;
+}
+.table.table-striped tbody td {
+	line-height: 14px!important;
+	font-size: 11px;
+}
+textarea {
+    background-color: #fff7e5;
+}
+textarea.error {
+	outline: none;
+    border-color: #e14e42;
+    box-shadow: 0 0 4px #f25d34;
+}
+label.error{
+	color: #cc3333;
+}
+</style>
+
+<div class="span12" id="datos-factura">
+	<div class="container-fluid" >
+		<div class="row-fluid">
+			<div class="span12" id="datos-factura">
+<?php
+	$iconArrow = '<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>';
+	$order = array( 8, 6, 7, 10, 44, 45, 46, 9, 64, 65 );
+	$alarmas = $this->alarmas;
+	
+	foreach ($order as $key) {
+		
+		if( !isset($alarmas[$key]) ){
+			continue;
+		}
+		
+		$value = $alarmas[$key];
+		echo '<div class="separador_gastos"><span id="separador_'.$key.'" class="colapsar">-</span><span id="separador_'.$key.'" class="mostrar hide">+</span>'.$value['titulo'].'</div>';
+		 
+?>
+
+	<div class="contenedor_gastos separador_<?=$key?>" style="display: block;">
+	<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+		<th style="width:18%;"><?=$iconArrow;?> Categor&iacute;a<br><?=$iconArrow;?>Subcategor&iacute;a</th>
+		<th style="width: 8%;">Concepto</th>
+		<th style="width: 8%;">Cuenta</th>
+		<th style="width: 8%;">Ligas</th>
+		<th style="width:20%;">Detalle de alerta</th>
+		<th style="width:40%;">Justificaci&oacuten</th></tr>
+	</thead>
+	<tbody>
+	
+<?php		
+		if ($key == 9) { // Jefe Inmediato
+				echo '<tr><td colspan=5>'.$value['titulo'].'</td><td>NO APLICA</td></tr>';
+		} else {
+			foreach ($value['data'] as $data) {
+				
+				$justificacion = '<form name="dataRow_'.$key.'_'.$data['FCCREDITOCARTERA'].'" >';
+				
+				$links = '';
+				$x5 = '<a target="_blank" href="http://quasar.pendulum.com.mx:59001/el/aplicacion/creditos/credito?dmacct='.$data['FCCREDITOCARTERA'].'&user=ialtamirano">X5</a>';
+				$x1 = '<a target="_blank" href="http://quasar.pendulum.com.mx:59001/cobranza/aplicacion/credito/?dmacct='.$data['FCCREDITOCARTERA'].'&user=ialtamirano">X1</a>';
+//				$x1 = '<a target="_blank" href="http://quasar.pendulum.com.mx:59001/cas/aplicacion/url/aplicacionExterna/?dmacct='.$data['FCCREDITOCARTERA'].'&amp;user=&amp;procedencia=COB">X1</a><br>';
+//				$x5 = '<a target="_blank" href="http://quasar.pendulum.com.mx:59001/cas/aplicacion/url/aplicacionExterna/?dmacct='.$data['FCCREDITOCARTERA'].'&amp;user=|COB|1&amp;procedencia=EL1">X5</a> ';
+
+//
+
+				switch ($key) { 
+					case 6: 
+						$justificacion.= '<textarea cols="50" rows="5" maxlength="1999" class="txtJusti" required >'.$data['FCJUSTIFICACIONUMBRAL'].'</textarea>';
+						$links.= $x5.$x1;
+					break;
+					case 7: // Etapas
+						$justificacion.= '<textarea cols="50" rows="5" maxlength="1999" class="txtJusti" required >'.$data['FCJUSTIFICAETAPA'].'</textarea>';
+						$links.= $x5.$x1;
+					break;
+					case 8: // Pago doble
+						$justificacion.= '<textarea cols="50" rows="5" maxlength="1999" class="txtJusti" required >'.$data['FCJUSTIFICAPAGODBL'].'</textarea>';
+						$links.= $x5.$x1;
+						$links.="<a target='_blank' href='http://quantum1.pendulum.com.mx/pendulum/procesoGastos/muestra_pagosdobles.php?dmacct=".$data['FCCREDITOCARTERA']."&concepto=".$data['IDCONCEPTO']."&casoid=".$this->idgasto."'>PGO DBL</a><br>";
+					break;
+					case 10: 
+						$justificacion.= '<textarea cols="50" rows="5" maxlength="1999" class="txtJusti" required >'.$data['FCJUSTIFICAEMPRESA'].'</textarea>';
+						$links = "";
+					break;
+					case 44: 
+						$justificacion.= '<textarea cols="50" rows="5" maxlength="1999" class="txtJusti" required >'.$data['FCJUSTIFICAEXCGASTO'].'</textarea>';
+						$links = "";
+					break;
+					case 45: 
+						$justificacion.= '<textarea cols="50" rows="5" maxlength="1999" class="txtJusti" required >'.$data['FCJUSTIFICETAFINAL'].'</textarea>';
+						$links.= $x5.$x1;
+					break;
+					case 46: 
+						$justificacion.= '<textarea cols="50" rows="5" maxlength="1999" class="txtJusti" required >'.$data['FCJUSTIFICALIQ'].'</textarea>';
+						$links.= $x5.$x1;
+					break;
+					case 65: case 64: // No reembolsable : Project manajer 
+						$justificacion = 'NO APLICA'; $links.= $x5.$x1; break;
+					default: $justificacion = ''; $links = ''; break;
+				}
+				
+				$justificacion.= '<input type="hidden" name="caso" value="'.$this->idgasto.'" />';
+				$justificacion.= '<input type="hidden" name="tipo" value="'.$key.'" />';
+				$justificacion.= '<input type="hidden" name="concepto" value="'.$data['IDCONCEPTO'].'" />';
+				$justificacion.= '<input type="hidden" name="credito" value="'.$data['FCCREDITOCARTERA'].'" /> </form>';
+						
+				
+				echo '<tr>';
+				if ($key == 10 || $key == 44) {
+					echo '<td colspan=5>'.$value['titulo'].'</td>';
+					echo '<td>'.$justificacion.'</td>';
+					break;
+				} else {
+					echo '<td>'.$iconArrow.$data['CATEG'].'<br>'.$iconArrow.$data['CATEGSUBCAT'].'</td>';
+					echo '<td>'.$data['CONCEPTO'].'</td>';
+					echo '<td>'.$data['FCCREDITOCARTERA'].'</td>';
+					echo '<td>'.$links.'</td>';
+					echo '<td>'.$data['FNIMPORTE'].'</td>';
+					echo '<td>'.$justificacion.'</td>';
+				}
+				echo '</tr>';
+			}
+		}
+?>
+ 	</tbody>
+	</table>
+	</div>
+
+<?php
+	}
+?>
+		</div>
+	</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+	$(".colapsar").off('click').click(function(){
+		$("."+this.id).fadeOut("slow");
+		$(this).addClass('hide');
+		$(this).next().removeClass('hide');
+	});
+	$(".mostrar").off('click').on("click",function(){ 
+		$("."+this.id).fadeIn("slow");
+		$(this).addClass('hide');
+		$(this).prev().removeClass('hide');
+	});
+	$(".txtJusti").off('blur').on('blur',function(){
+
+		var form = $(this).parent();
+		var textJusti = $(this).val();
+
+		var validator = $(form).validate();
+		var isValid = validator.form();
+		if( !isValid ) { return false; }
+	
+		var baseUrl = '<?=$this->baseUrl?>';
+		
+		$.ajax({
+			  url: baseUrl + '/gastos/asignacion/set-justificaciones',
+			  type: 'POST',
+			  data: form.serialize() + '&texto='+textJusti,
+			  dataType: 'json',
+			  success: function(data) {
+				  console.log(data);
+			  }
+		});
+
+	});
+});
+</script>

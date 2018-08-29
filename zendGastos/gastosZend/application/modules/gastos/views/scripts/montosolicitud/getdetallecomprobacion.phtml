@@ -1,0 +1,36 @@
+﻿<?php if( count($this->comprobaciones) > 0 ) { ?>
+<table class="table table-bordered">
+	<thead>
+    	<tr>
+      		<th>Categoría/Subcategoría</th>
+      		<th>Concepto</th>
+      		<th>Cuenta/Cartera/Concepto</th>
+      		<th>Verificación final</th>
+<!--      		<th style="text-align:center;">Importe solicitado</th>-->
+      		<th style="text-align:center;">Importe comprobado (sin IVA)</th>
+    	</tr>
+  	</thead>
+  	<tbody>
+  		<?php $total = 0; $impReal = 0; foreach($this->comprobaciones as $item): ?>
+    	<tr>
+      		<td><?php echo $item['CATEGSUB'];?></td>
+      		<td><?php echo $item['NMCONCEPTO'];?></td>
+      		<td><?php echo $item['CREDITO'];?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $item['CENTROCOSTOS'];?><br><?php echo $item['DEUDOR'];?></td>
+      		<td><?php echo $item['VERIFFINAL'];?></td>
+<!--      		<td style="text-align:right;padding-top: 14px;" ><?php echo $item['IMPORTECOMAS'];?></td>-->
+      		<td style="text-align:right;" ><input class="input-mini importereal" type="text" id="impoReal-<?php echo $item['VALOR'];?>" name="impoReal-<?php echo $item['VALOR'];?>" maxlength="9" idsolicitud="<?php echo $item['IDSOLICITUD'];?>" idconcepto="<?php echo $item['IDCONCEPTO'];?>" credito="<?php echo $item['CREDITO'];?>" value="<?php echo $item['IMPORTEREAL'];?>" style="text-align:right;"/></td>
+    	</tr>
+    	<?php $total += (float)$item['IMPORTESOLIC']; $impReal += (float)$item['IMPORTEREAL']; endforeach; ?>
+  	</tbody>
+  	<tfoot>
+  		<tr>
+  			<th colspan="4" style="text-align:right;">Total comprobado</th>
+<!--      		<th style="text-align:right;"><?php echo "$ " .  number_format($total, 2, ".", ","); ?></th>-->
+      		<th style="text-align:right;" id="totalImporteReal" ><?php echo "$ " .  number_format($impReal, 2, ".", ","); ?></th>
+      		<th></th>
+    	</tr>
+  	</tfoot>
+</table>
+<?php } else { ?>
+	<p>No hay registros</p>
+<?php } ?>

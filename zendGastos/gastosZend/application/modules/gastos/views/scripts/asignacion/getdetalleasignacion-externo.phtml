@@ -1,0 +1,36 @@
+﻿<?php if( count($this->asignaciones) > 0 ) { ?>
+<table class="table table-bordered">
+  <thead>
+      <tr>
+          <th>Categoría/Subcategoría</th>
+          <th>Concepto</th>
+          <th><?php echo $this->tipocapturaLabel;?></th>
+          <th style="text-align:center;">Importe</th>
+          <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php $total = 0;  foreach($this->asignaciones as $item): ?>
+      <tr>
+          <td><?=$item['CATEGSUB'];?></td>
+          <td><?=$item['NMCONCEPTO'];?></td>
+          <td><?=$item['CREDITO'];?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$item['CENTROCOSTOS'];?><br><?=utf8_encode($item['DEUDOR']);?></td>
+          <td style="text-align:right;padding-top: 14PX;" ><?=$item['IMPORTECOMAS'];?></td>
+          <td style="text-align:right;padding-top: 14PX;display:none;" ><input class="emailSuperHidden" type="hidden" value="<?=$item['MAIL_SUPERVISOR'];?>"></td>
+          <td><?php if( $item["IDTIPOMOVTO"] == "2" || $item["IDTIPOMOVTO"] == "3"){ ?><a href="#" style="font: normal 11px arial, tahoma, helvetica, sans-serif;" class="linkX1" rel="<?=$item['CREDITO'];?>">X1</a>&nbsp;&nbsp;&nbsp;<a href="#" style="font: normal 11px arial, tahoma, helvetica, sans-serif;" class="linkX5" rel="<?=$item['CREDITO'];?>">X5</a>&nbsp;&nbsp;&nbsp;<?php }?>
+            <a href="#" class="removeAsigna" rel="<?=$item['VALOR'];?>" credito="<?=$item['CREDITO'];?>" concepto="<?=$item['IDCONCEPTO'];?>" nmconcepto="<?=$item['NMCONCEPTO'];?>">
+            <i class="icon-remove" ></a></td>
+      </tr>
+      <?php $total += (float)$item['IMPORTE']; endforeach; ?>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="3" style="text-align:right;">Total</th>
+          <th style="text-align:right;"><?php echo "$ " .  number_format($total, 2, ".", ","); ?></th>
+          <th></th>
+      </tr>
+    </tfoot>
+</table>
+<?php } else { ?>
+  <p>No hay registros</p>
+<?php } ?>

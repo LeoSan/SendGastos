@@ -1,0 +1,988 @@
+<link rel="stylesheet" media="screen" href="<?php echo $this->baseUrl; ?>/lib/bootstrap_3_3/css/bootstrap.min.css">
+<link rel="stylesheet" media="screen" href="<?php echo $this->baseUrl; ?>/lib/bootstrap_3_3/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/jqgrid_5.1.1/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/bootstrap_3_3/js/bootstrap.min.js"></script>
+
+<style>
+
+	.container {
+		width: 96%;
+		padding-right: 5px;
+		padding-left: 5px;
+		margin-right: 3%;
+		margin-left: 3%;
+	}
+	sup{
+		font-family: fantasy;
+		left: -5px;
+		top: -12px;
+		color: brown;
+	}
+	.subtitle {
+		background-color: aliceblue;
+		border: 1px solid #f2f2f2;
+		padding: 3px;
+		font-size: 14px;
+		font-weight: bold;
+		cursor: pointer;
+	}
+	.letteruauto {
+		font-family: fantasy;
+		font-size: 16px;
+		margin: 0 4px 0;
+		cursor: pointer;
+	}
+	.urldisable{ pointer-events: none; }
+	.disable { color: #525252; cursor: auto!important; text-shadow: 0px 0px 0px #525252 }
+	.subparte { margin-bottom: 12px; }
+	.glyphicon { padding: 1px; cursor: pointer; }
+	.right { text-align: right; }
+	.center { text-align: center; }
+	a:visited { color: #5922a6; }
+	body {
+		font-size: 12px;
+		background-color: #fdfdff;
+	}
+	.table { font-size: 14px!important; margin-bottom: 0;}
+	.table td, .table>thead:first-child>tr:first-child>th { font-size: 12px!important; }
+	.encabezado {
+		margin-bottom: 18px;
+		border-bottom: 1px solid #ccc;
+	}
+	.letterTermo {
+		cursor: context-menu;
+		font-weight: bold;
+	}
+	.modal { top: 5%; }
+	.useraut{
+		color: #fafa00;
+		display: inline-block;
+	}
+	.useraut.cancel{ color: #ae010a; }
+	.useraut.aprobado{ color: #5cb85c; }
+	.useraut.actual{ color: #2d56e6; }
+	.useraut.wait{ color: #f0ad4e; }
+</style>
+
+<?php
+function numberToMoneda($number){
+	if( is_numeric($number) ) {
+		return '$'.number_format($number,2,'.',',');
+	} else {
+		return $number;
+	}
+}
+?>
+
+<div class="modal fade" id="modalDetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="detailModalLabel"></h4>
+			</div>
+			<div class="modal-body" id="tableAutorizaciones">
+				<!--         <table class="table table-striped table-bordered table-hover" >
+                        </table>  -->
+			</div>
+			<div class="modal-footer">
+				<a id="linkpd" target="_black" href="" style="display:none"> Detalle pago doble </a>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<h2>Solicitud de gasto No. <?=$this->idgasto?></h2>
+	<input type="hidden" id="usuariopm" name="usuariopm" value="<?=(isset($this->user[0])) ? $this->user[0]['PMUSER'] : '' ;?>">
+
+	<?php if( $this->existe == 0 ){
+		echo '<h4>No se tiene registrado el numero de gasto o se han eliminado la cuentas asociadas a la solicitud.</h4>';
+		?>
+		
+		<!-- BEGIN: Seguimiento Etapa -->
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subtitle" id="sub_6">
+		<span class="iconp_6 glyphicon glyphicon-plus" style="display: none;" aria-hidden="true"></span>
+		<span class="iconm_6 glyphicon glyphicon-minus" aria-hidden="true"></span>
+		Bit&aacute;cora de seguimiento: Etapa X Etapa
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subpart_6">
+		<table class="table table-striped table-bordered table-hover">
+			<thead><tr><th>#</th>
+				<th>Etapa</th>
+				<th>Fecha</th>
+				<th>Usuario</th>
+				<th>Resultado</th>
+				<th>Comentario</th>
+			</thead>
+			<tbody>
+			<?php
+			if( count($this->etapaxetapa) == 0 ) {
+				echo '<tr><td class="center" colspan="6">Sin datos</td></tr>';
+			}
+			foreach ($this->etapaxetapa as $value) { ?>
+				<tr><td><?=$value['DEL_INDEX']?></td>
+					<td><?=$value['NMETAPA']?></td>
+					<td><?=$value['FECREG']?></td>
+					<td><?=utf8_decode( $value['FCUSUARIO'] )?></td>
+					<td><?=$value['FCRESULTADO']?></td>
+					<td><?=utf8_decode($value['FCCOMENTARIOS'])?> </td>
+				</tr>
+				<?php
+			} ?>
+			</tbody>
+		</table>
+	</div>
+	<!-- END: Seguimiento -->
+		<?php
+		exit;
+	}
+	if(!isset($this->user[0])){
+		echo '<h4>El usuario no tiene acceso autorizado.</h4>';exit;
+	} ?>
+
+	<div class="progress progress-striped">
+		<?php
+		$total = count($this->termometro);
+		$width = 100/$total;
+
+		foreach ( $this->termometro as $item ) {
+			$title = utf8_decode($item['NMTASK'].' '.$item['NMSUBTASK']);
+			if( $item['SUCCESS'] === 0 ) {
+				$clclass = 'progress-bar-warning '.$item['SUCCESS'];
+			} else if ( $item['SUCCESS'] === 1 ) {
+				$clclass = 'progress-bar-success '.$item['SUCCESS'];
+			} else if ( $item['SUCCESS'] === 2 ) {
+				$clclass = ''.$item['SUCCESS'];
+			}	?>
+			<div class="progress-bar <?=$clclass?>" title="<?=$title?>" style="width: <?=$width?>%">
+				<span class="letterTermo" aria-hidden="true"><?=$item['NMSHORTTASK']?></span>
+			</div>
+		<?php } ?>
+	</div>
+
+	<!-- BEGIN: Informacion General -->
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subtitle" id="sub_1">
+		<span class="iconp_1 glyphicon glyphicon-plus" style="display: none;" aria-hidden="true"></span>
+		<span class="iconm_1 glyphicon glyphicon-minus" aria-hidden="true"></span>
+		Informaci&oacute;n general
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 subparte subpart_1">
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Fecha de solicitud:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=($this->dataGeneral[0]['FECHAALTA'])?></label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Empleado:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=utf8_decode($this->dataUsuario[0]['DATAEMPLEADO'])?></label></div>
+
+		<?php
+		$fechaAut = '--/---/--';
+		foreach ($this->etapaxetapa as $value) {
+			if($value['IDTASKGASTO'] == '8961359245370cf9de08e25000253648' ) {
+				$fechaAut = $value['FECREG'];
+			}
+		}
+		?>
+
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de caso">Fecha de autorizaci&oacute;n:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$fechaAut?></label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de caso">Sucursal:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=utf8_encode($this->dataUsuario[0]['IDUBICACION'].' - '.$this->dataUsuario[0]['UBICACION'])?></label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de caso">Centro de costos:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->dataUsuario[0]['IDAREA'].' - '.$this->dataUsuario[0]['AREA']?></label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de caso">Estatus:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label>
+				<?php switch ($this->dataGeneral[0]['STATUS']) {
+					case 'F':
+						echo '<div style="color: red;">Finalizado</div>';
+						break;
+					case 'R':
+						echo '<div style="color: red;">Registrado</div>';
+						break;
+					case 'Z':
+						echo '<div style="color: red;">Cancelado</div>';
+						break;
+					default:
+						echo '<div style="color: red;">En soluci&oacuten</div>';
+						break;
+				}
+				?></label></div>
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 subparte subpart_1">
+		<?php if( isset($this->dataBitacora[0]) ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Actualmente en:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->dataBitacora[0]['TAREA_ACTUAL']?></label></div>
+
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Actualmente con:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=($this->dataBitacora[0]['USER_ACTUAL'])?$this->dataBitacora[0]['USER_ACTUAL']:'Sin asignar'?></label></div>
+
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Desde:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=($this->dataBitacora[0]['DELEGADO'])?></label></div>
+		<?php } ?>
+
+		<?php if( isset($this->asignafactura[0]) && $this->asignafactura[0]['IDPLAN'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Plan de viaje asociado:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><a target="_blank" href="http://quantum2.pendulum.com.mx/gastosfact/public/planesdeviaje/consulta/getdetalleplanviaje/cc/1/caso/<?=$this->asignafactura[0]['IDPLAN']?>" ><?=$this->asignafactura[0]['IDPLAN']?></a></label></div>
+		<?php } ?>
+	</div>
+	<!-- END: Informacion General -->
+
+
+	<!-- BEGIN: Detalle de la solicitud -->
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subtitle" id="sub_2">
+		<span class="iconp_2 glyphicon glyphicon-plus" style="display: none;" aria-hidden="true"></span>
+		<span class="iconm_2 glyphicon glyphicon-minus" aria-hidden="true"></span>
+		Detalle de la solicitud
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 subparte subpart_2">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 encabezado"><label class="labelStyle" for="Numero de Caso">Generalidades</label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><label class="labelStyle" for="Numero de Caso">Tipo de solicitud:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7"><label><?=$this->dataGeneral[0]['TPOMOVIMIENTO']?></label></div>
+		<?php if( $this->dataGeneral[0]['TIPOSOLUCION'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><label class="labelStyle" for="Numero de Caso">Tipo de solución:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7"><label><?=$this->dataGeneral[0]['TIPOSOLUCION']?></label></div>
+		<?php } ?>
+		<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><label class="labelStyle" for="Numero de Caso">Fecha de solicitud:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7"><label><?=($this->dataGeneral[0]['FECHAALTA'])?></label></div>
+		<?php if( $this->dataGeneral[0]['SEVERIDAD'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><label class="labelStyle" for="Numero de Caso">Severidad:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7"><label><?=$this->dataGeneral[0]['SEVERIDAD']?></label></div>
+		<?php } ?>
+
+		<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><label class="labelStyle" for="Numero de Caso">Importe solicitado:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7"><label><?=numberToMoneda($this->dataGeneral[0]['IMPSOLICITADO'])?></label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><label class="labelStyle" for="Numero de Caso">Importe anticipo / pago:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7"><label><?=numberToMoneda($this->dataGeneral[0]['ANTICIPO'])?></label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><label class="labelStyle" for="Numero de Caso">Comentario:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7"><label><?=utf8_decode($this->dataGeneral[0]['COMENTARIO'])?></label></div>
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 subparte subpart_2">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 encabezado"><label class="labelStyle" for="Numero de Caso">Forma de pago</label></div>
+		<?php if( $this->dataGeneral[0]['EMPFACTURA'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Empresa:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->dataGeneral[0]['EMPFACTURA']?></label></div>
+		<?php } ?>
+		<?php if( $this->dataGeneral[0]['FORMAPAGO'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Forma de pago:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->dataGeneral[0]['FORMAPAGO']?></label></div>
+		<?php } ?>
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Tipo cuenta:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->dataGeneral[0]['TPOCUENTA']?></label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Centro de costos:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->dataUsuario[0]['AREA']?></label></div>
+	</div>
+	<!-- END: Detalle de la solicitud -->
+
+
+	<!-- BEGIN: Asignacion para facturacion -->
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subtitle" id="sub_8">
+		<span class="iconp_8 glyphicon glyphicon-plus" style="display: none;" aria-hidden="true"></span>
+		<span class="iconm_8 glyphicon glyphicon-minus" aria-hidden="true"></span>
+		Asignaci&oacute;n para facturaci&oacute;n
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subpart_8">
+		<table class="table table-striped table-bordered table-hover">
+			<thead><tr><th> <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> Categor&iacute;a<br><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> Subcategor&iacute;a</th>
+				<th>Concepto</th>
+				<th>Cartera</th>
+				<th>Cuenta</th>
+				<th>Acreditado</th>
+				<th>Detalle autorizadores</th>
+				<th>Solicitado</th>
+				<th>Comprobado</th>
+				<th>Detalle autorizadores</th>
+				<th>Estado</th>
+				<th>Centro de costos</th>
+				<th>Facturable</th>
+				<th>Reembolsable</th>
+				<th>Detalle</th>
+			<tr></thead>
+			<tbody>
+			<?php
+			if( count($this->asignafactura) == 0 ) {
+				echo '<tr><td class="center" colspan="11">Sin datos</td></tr>';
+			} else {
+				$total1 = 0;$total2 = 0;
+				foreach ($this->asignafactura as $value) {
+					echo '<tr><td><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>'.utf8_decode($value['CATEG']).'<br><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>'.utf8_decode($value['CATEGSUB']).'</td>
+    				          <td>'.utf8_decode($value['NMCONCEPTO']).'</td>
+    				          <td>'.$value['CARTERA'].'</td>
+    				          <td>'.$value['CREDCART'].'</td>
+    				          <td>'.($value['NMACREDITADO']).'</td>
+    				          <td style="width: 10%;">';
+					foreach ($this->autPrecomproba as $valueaut) {
+						$enable = 'disable hide';
+						$case = '';
+						$credit = '';
+						$result = '';
+
+						if( isset($this->validaAuto[ $valueaut['TPOAUT'] ] ) ) {
+
+							if( $valueaut['TPOAUT'] == 64 ||
+								$valueaut['TPOAUT'] == 65 ||
+								$valueaut['TPOAUT'] == 6 ) {
+								$credit = 0;
+							}
+
+							$info = $this->validaAuto[ $valueaut['TPOAUT'] ];
+
+							foreach ( $info as $itemcredito => $datas) {
+								if ( $itemcredito == $value['CREDCART'] ) {
+									$enable = 'enable';
+									$credit = $value['CREDCART'];
+									$result = $this->validaAuto[ $valueaut['TPOAUT'] ][$itemcredito]['RAUT'];
+								} else if( $itemcredito == $valueaut['TPOAUT'] ) {
+									$enable = 'enable';
+									$result = $this->validaAuto[ $valueaut['TPOAUT'] ][$itemcredito]['RAUT'];
+								}
+							}
+
+							switch ( $result ) {
+								case 'Autorizado': $case = 'aprobado'; break;
+								case 'Rechazado': $case = 'cancel'; break;
+								case '': $case = 'wait'; break;
+								default: $case = ''; break;
+							}
+							if( $case == 'wait'
+								&& $this->validaAuto[ $valueaut['TPOAUT'] ][$itemcredito]['UIDT'] != NULL
+								&& $this->validaAuto[ $valueaut['TPOAUT'] ][$itemcredito]['RBIT'] == NULL ) {
+								$case = 'actual';
+							}
+						}
+
+						echo '<div title="'.utf8_decode($valueaut['NMTASK'].' '.$valueaut['NMSUBTASK']).'" 
+     				               class="useraut '.$case.'">
+     				               <span class="letteruauto '.$enable.'"
+     				               		 data-tipo="'.$valueaut['TPOAUT'].'"
+     				               		 data-cuenta="'.$credit.'"
+     				               		 data-concepto="'.$value['IDCONCEPTO'].'"
+     				               		 data-credito="'.$value['CREDCART'].'"> '.$valueaut['NMSHORTTASK'].' </span></div> ';
+					}
+					echo '</td>
+    				          <td class="right">'.numberToMoneda($value['IMPORTE']).'</td>
+    				          <td class="right">'.numberToMoneda($value['IMPORTECOMPROBA']).'</td><td style="width: 10%;">';
+
+					foreach ($this->autAftcomproba as $valueaut) {
+						$enable = 'disable hide';
+						$case = '';
+						$credit = '';
+						$result = '';
+
+						if( isset($this->validaAuto[ $valueaut['TPOAUT'] ] ) ) {
+
+							if( $valueaut['TPOAUT'] == 64 ||
+								$valueaut['TPOAUT'] == 65 ||
+								$valueaut['TPOAUT'] == 6 ) {
+								$credit = 0;
+							}
+							$info = $this->validaAuto[ $valueaut['TPOAUT'] ];
+
+							foreach ( $info as $itemcredito => $datas) {
+								if ( $itemcredito == $value['CREDCART'] ) {
+									$enable = 'enable';
+									$credit = $value['CREDCART'];
+									$result = $this->validaAuto[ $valueaut['TPOAUT'] ][$itemcredito]['RAUT'];
+								} else if( $itemcredito == $valueaut['TPOAUT'] ) {
+									$enable = 'enable';
+									$result = $this->validaAuto[ $valueaut['TPOAUT'] ][$itemcredito]['RAUT'];
+								}
+							}
+
+							switch ( $result ) {
+								case 'Autorizado': $case = 'aprobado'; break;
+								case 'Rechazado': $case = 'cancel'; break;
+								case '': $case = 'wait'; break;
+								default: $case = ''; break;
+							}
+							if( $case == 'wait'
+								&& $this->validaAuto[ $valueaut['TPOAUT'] ][$itemcredito]['UIDT'] != NULL
+								&& $this->validaAuto[ $valueaut['TPOAUT'] ][$itemcredito]['RBIT'] == NULL ) {
+								$case = 'actual';
+							}
+						}
+
+						echo '<div title="'.utf8_decode($valueaut['NMTASK'].' '.$valueaut['NMSUBTASK']).'" 
+     				               class="useraut '.$case.'">
+     				               <span class="letteruauto '.$enable.'"
+     				               		 data-tipo="'.$valueaut['TPOAUT'].'"
+     				               		 data-cuenta="'.$credit.'"
+     				               		 data-concepto="'.$value['IDCONCEPTO'].'"
+     				               		 data-credito="'.$value['CREDCART'].'"> '.$valueaut['NMSHORTTASK'].' </span></div> ';
+					}
+					$document = '';
+					if ($value['tdocument'] != 0) {
+						$document = '<span title="Documentos relacionados" class="glyphicon glyphicon-folder-open" data-concepto="'.$value['IDCONCEPTO'].'" data-comprobacion="'.$value['COMPROBA'].'" 
+    				                           data-nmconcepto="'.$value['NMCONCEPTO'].'" data-cuenta="'.$value['CREDCART'].'" ></span>';
+					}
+					echo '</td><td class="center">'.$value['STATUS'].'</td>
+    				          <td>'.$value['FCCENTROCOSTOS'].'</td>
+    				          <td class="center">'.$value['ESFACTURABLE'].'</td>
+    				          <td class="center">'.$value['ESREEMBOLSABLE'].'</td>
+    				          <td> '.$document.'<span title="Pago de servicios" class="glyphicon glyphicon-calendar" data-concepto="'.$value['IDCONCEPTO'].'" data-credito="'.$value['CREDITO'].'" ></span>
+    				              <span title="Comprobaciones" class="glyphicon glyphicon-usd" data-concepto="'.$value['IDCONCEPTO'].'" data-comprobacion="'.$value['COMPROBA'].'" 
+    				                           data-nmconcepto="'.$value['NMCONCEPTO'].'" data-cuenta="'.$value['CREDCART'].'" ></span>';
+
+					if( $value['CREDCART'] != NULL && $value['CREDCART'] !== 'IMPORTE GENERAL' && $value['XLINK'] != NULL ) {
+						echo '<a href="#" class="linkX1" rel="'.$value['CREDCART'].'">X1</a>';
+						echo ' <a href="#" class="linkX5" rel="'.$value['CREDCART'].'">X5</a>';
+					}
+
+					echo '</td>
+    				</tr>';
+
+					$total1 += $value['IMPORTE'];
+					$total2 += $value['IMPORTECOMPROBA'];
+				}
+
+				echo '<tr><td class="right" colspan="6">Totales</td>
+    				<td class="right">'.numberToMoneda($total1).'</td>
+    				<td class="right">'.numberToMoneda($total2).'</td>
+    				<td colspan="5"></td>
+    				</tr>';
+
+			}
+			?>
+			</tbody>
+		</table>
+	</div>
+	<!-- END: Asignacion para facturacion -->
+
+
+	<!-- BEGIN: Seguimiento de Tesoreria -->
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subtitle" id="sub_3">
+		<span class="iconp_3 glyphicon glyphicon-plus" style="display: none;" aria-hidden="true"></span>
+		<span class="iconm_3 glyphicon glyphicon-minus" aria-hidden="true"></span>
+		Seguimiento: Tesorer&iacute;a
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subpart_3">
+		<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><label class="labelStyle" for="Numero de Caso">Forma de pago:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><label><?=$this->dataGeneral[0]['FORMAPAGO']?></label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><label class="labelStyle" for="Numero de Caso">Fecha esperada del deposito:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><label><?=$this->dataGeneral[0]['FECMAXPAGO']?></label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><label class="labelStyle" for="Numero de Caso">Importe solicitado:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><label><?=numberToMoneda($this->dataGeneral[0]['IMPSOLICITADO'])?></label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><label class="labelStyle" for="Numero de Caso">Fechas max de comprobaci&oacute;n:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><label><?=$this->dataGeneral[0]['FECCOMPDEP']?></label></div>
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 subparte subpart_3">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 encabezado"><label class="labelStyle" for="Numero de Caso">Anticipo</label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Importe:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=numberToMoneda($this->tesoreria[0]['ANTICIPO'])?></label></div>
+		<?php if( $this->tesoreria[0]['QUIENDEPOSITODEP'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">A quien se le deposito:</label></div>
+			<?php $pos = strpos($this->tesoreria[0]['IDDEPOSITODEP'], 'E');
+			if ($pos === FALSE) { $puesto = 'PROVEEDOR'; }
+			else { $puesto = 'EMPLEADO'; } ?>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['QUIENDEPOSITODEP'].' - '.$puesto?></label></div>
+		<?php } if( $this->tesoreria[0]['EMPRESADEP'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Empresa facturaci&oacute;n:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['EMPRESADEP']?></label></div>
+		<?php } ?>
+		<?php if( $this->tesoreria[0]['REFERENCIADEP'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Referencia:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['REFERENCIADEP']?></label></div>
+		<?php } if( $this->tesoreria[0]['QUIENLOHIZODEP'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Responsable:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['QUIENLOHIZODEP']?></label></div>
+		<?php } if( $this->tesoreria[0]['LOTEANT'] != '' && $this->isAdmin == '1' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Lote">Lote:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['LOTEANT']?></label></div>
+		<?php } if( $this->tesoreria[0]['REFDYNANT'] != '' && $this->isAdmin == 1 ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Referencia">Referencia Dyn:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['REFDYNANT']?></label></div>
+		<?php } ?>
+		<?php if( $this->tesoreria[0]['FECAPLDEP'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Fecha deposito:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['FECAPLDEP']?></label></div>
+		<?php } ?>
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Fecha facturaci&oacute;n:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['FECCONFDEP']?></label></div>
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 subparte subpart_3">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 encabezado"><label class="labelStyle" for="Numero de Caso">Reembolso</label></div>
+
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Importe:</label></div>
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=numberToMoneda($this->tesoreria[0]['REEMBOLSO'])?></label></div>
+		<?php if( $this->tesoreria[0]['QUIENDEPOSITOREE'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">A quien se le deposito:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['QUIENDEPOSITOREE']?></label></div>
+		<?php } if( $this->tesoreria[0]['EMPRESAREE'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Empresa facturaci&oacute;n:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['EMPRESAREE']?></label></div>
+		<?php } if( $this->tesoreria[0]['REFERENCIAREE'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Referencia:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['REFERENCIAREE']?></label></div>
+		<?php } if( $this->tesoreria[0]['QUIENLOHIZOREE'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Responsable:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['QUIENLOHIZOREE']?></label></div>
+		<?php } if( $this->tesoreria[0]['LOTEREE'] != '' && $this->isAdmin == '1' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Lote">Lote:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['LOTEREE']?></label></div>
+		<?php } if( $this->tesoreria[0]['REFDYNREE'] != '' && $this->isAdmin == '1' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Referencia">Referencia Dyn:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['REFDYNREE']?></label></div>
+		<?php } if( $this->tesoreria[0]['FECAPLREE'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Fecha deposito:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['FECAPLREE']?></label></div>
+		<?php } if( $this->tesoreria[0]['FECCONFREE'] != '' ) { ?>
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><label class="labelStyle" for="Numero de Caso">Fecha facturaci&oacute;n:</label></div>
+			<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><label><?=$this->tesoreria[0]['FECCONFREE']?></label></div>
+		<?php } ?>
+	</div>
+
+	<!-- END: Seguimiento de Tesoreria -->
+
+
+	<!-- BEGIN: Comprobacion -->
+	<?php
+	$open = '';
+	$clos = 'style="display: none;"';
+	if( count($this->comprobaciones) == 0 ) {
+		$open = 'style="display: none;"';
+		$clos = '';
+	}
+	?>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subtitle" id="sub_4">
+		<span class="iconp_4 glyphicon glyphicon-plus" <?=$clos?> aria-hidden="true"></span>
+		<span class="iconm_4 glyphicon glyphicon-minus" <?=$open?> aria-hidden="true"></span>
+		Detalle: Comprobaci&oacute;n del gasto
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subpart_4" <?=$open?> >
+		<table class="table table-striped table-bordered table-hover">
+			<thead><tr>
+				<th>Comprobantes</th>
+				<th>Tipo de Comp.</th>
+				<th>Factura</th>
+				<th>Concepto</th>
+				<th>Fecha comprobaci&oacute;n</th>
+				<th>Proveedor</th>
+				<th>Importe</th>
+				<th>IVA</th>
+				<th>Otros imp</th>
+				<th>IVA ret</th>
+				<th>ISR</th>
+				<th>Total</th></tr>
+			</thead>
+			<tbody>
+			<?php
+			if( count($this->comprobaciones) == 0 ) {
+				echo '<tr><td class="center" colspan="11">Sin datos</td></tr>';
+			}
+			$total1 = 0;$total2 = 0;$total3 = 0;$total4 = 0;$total5 = 0;$total6 = 0;
+			$gesti1 = 0;$gesti2 = 0;$gesti3 = 0;$gesti4 = 0;$gesti5 = 0;$gesti6 = 0;
+			$devol1 = 0;$devol2 = 0;$devol3 = 0;$devol4 = 0;$devol5 = 0;$devol6 = 0;
+			foreach ($this->comprobaciones as $value) {
+				$pdf = ''; $xml = ''; $pdf2 = '';
+				if( $value['FCARCHIVOPDF'] != NULL ) {
+					$pdf = '<a href="'.$value['FCARCHIVOPDF'].'" target="_blank">PDF</a>';
+				}
+				if( $value['FCARCHIVOXML'] != NULL ) {
+					$xml = '<a href="'.$value['FCARCHIVOXML'].'" target="_blank">XML</a>';
+				}
+				if( $value['FCARCHIVOPDFC'] != NULL ) {
+					$pdf2= '<a href="'.$value['FCARCHIVOPDFC'].'" target="_blank">PDF2</a>';
+				}
+				?>
+				<tr><td><?=$pdf.' '.$xml.' '.$pdf2?></td>
+					<td><?=$value['TIPOCOMP']?></td>
+					<td><?=$value['FCNOFACTURA']?></td>
+					<td><?=utf8_decode($value['FCCONCEPTO'])?></td>
+					<td><?=$value['FDCOMPROBACION']?></td>
+					<td><?=utf8_decode($value['NMRFC'])?></td>
+					<td class="right"><?=numberToMoneda($value['FNIMPORTE'])?></td>
+					<td class="right"><?=numberToMoneda($value['FNIVA'])?></td>
+					<td class="right"><?=numberToMoneda($value['FNOTROSIMPUEST'])?></td>
+					<td class="right"><?=numberToMoneda($value['FNIVARET'])?></td>
+					<td class="right"><?=numberToMoneda($value['FNISR'])?></td>
+					<td class="right"><?=numberToMoneda($value['FNTOTAL'])?></td>
+				</tr>
+				<?php
+				if ( $value['TIPOCOMP'] == 'Ficha de Deposito' || $value['TIPOCOMP'] == 'Descuento de nomina' ) {
+					$devol1 += $value['FNIMPORTE'];
+					$devol2 += $value['FNIVA'];
+					$devol3 += $value['FNOTROSIMPUEST'];
+					$devol4 += $value['FNIVARET'];
+					$devol5 += $value['FNISR'];
+					$devol6 += $value['FNTOTAL'];
+				} else {
+					$gesti1 += $value['FNIMPORTE'];
+					$gesti2 += $value['FNIVA'];
+					$gesti3 += $value['FNOTROSIMPUEST'];
+					$gesti4 += $value['FNIVARET'];
+					$gesti5 += $value['FNISR'];
+					$gesti6 += $value['FNTOTAL'];
+				}
+				$total1 += $value['FNIMPORTE'];
+				$total2 += $value['FNIVA'];
+				$total3 += $value['FNOTROSIMPUEST'];
+				$total4 += $value['FNIVARET'];
+				$total5 += $value['FNISR'];
+				$total6 += $value['FNTOTAL'];
+			} ?>
+			<tr><td class="right" colspan="6">Gestionados</td>
+				<td class="right"><?=numberToMoneda($gesti1)?></td>
+				<td class="right"><?=numberToMoneda($gesti2)?></td>
+				<td class="right"><?=numberToMoneda($gesti3)?></td>
+				<td class="right"><?=numberToMoneda($gesti4)?></td>
+				<td class="right"><?=numberToMoneda($gesti5)?></td>
+				<td class="right"><?=numberToMoneda($gesti6)?></td></tr>
+			<tr><td class="right" colspan="6">Devoluci&oacute;n</td>
+				<td class="right"><?=numberToMoneda($devol1)?></td>
+				<td class="right"><?=numberToMoneda($devol2)?></td>
+				<td class="right"><?=numberToMoneda($devol3)?></td>
+				<td class="right"><?=numberToMoneda($devol4)?></td>
+				<td class="right"><?=numberToMoneda($devol5)?></td>
+				<td class="right"><?=numberToMoneda($devol6)?></td></tr>
+			<tr><td class="right" colspan="6">Totales</td>
+				<td class="right"><?=numberToMoneda($total1)?></td>
+				<td class="right"><?=numberToMoneda($total2)?></td>
+				<td class="right"><?=numberToMoneda($total3)?></td>
+				<td class="right"><?=numberToMoneda($total4)?></td>
+				<td class="right"><?=numberToMoneda($total5)?></td>
+				<td class="right"><?=numberToMoneda($total6)?></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<!-- END: Comprobacion de gasto -->
+
+
+	<!-- BEGIN: Detalle PgoServ -->
+	<?php
+	$open = '';
+	$clos = 'style="display: none;"';
+	if( count($this->pagoservicio) == 0 ) {
+		$open = 'style="display: none;"';
+		$clos = '';
+	}
+	?>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subtitle" id="sub_5">
+		<span class="iconp_5 glyphicon glyphicon-plus" <?=$clos?> aria-hidden="true"></span>
+		<span class="iconm_5 glyphicon glyphicon-minus" <?=$open?> aria-hidden="true"></span>
+		Detalle : Pago de servicio
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subpart_5" <?=$open?> >
+		<table class="table table-striped table-bordered table-hover">
+			<thead><tr><th>Cuenta</th>
+				<th>Factura</th>
+				<th>Importe</th>
+				<th>Fecha real de pago</th>
+				<th>Remesa</th>
+				<th>Servicio pagado del</th>
+				<th>Servicio pagado al</th>
+				<th>Pagado previamente</th>
+				<th>Fecha pr&oacute;ximo pago</th>
+				<th style="width: 12%;">Comentarios</th>
+			</thead>
+			<tbody>
+			<?php
+			if( count($this->pagoservicio) == 0 ) {
+				echo '<tr><td class="center" colspan="10">Sin datos</td></tr>';
+			} else {
+				foreach ($this->pagoservicio as $value) { ?>
+					<tr><td><?=$value['CREDITO']?></td>
+						<td><?=$value['FCNOFACTURA']?></td>
+						<td class="right"><?=numberToMoneda($value['FNIMPORTECOMPROBA'])?></td>
+						<td><?=$value['FECREALPAGO']?></td>
+						<td><?=$value['FCREMESA']?></td>
+						<td><?=$value['FECSERVPAGADODEL']?></td>
+						<td><?=$value['FECSERVPAGADOAL']?></td>
+						<td><?=$value['FCPAGADOPREVIAMENTE']?></td>
+						<td><?=$value['FECCUMBREPAGO']?></td>
+						<td><?=($value['FCCOMENTARIOPAGOSERV'])?></td>
+					</tr>
+					<?php
+				} }?>
+			</tbody>
+		</table>
+	</div>
+	<!-- END: Detalle PgoServ -->
+
+	<!-- BEGIN: Documentos -->
+	<?php
+	$open = '';
+	$clos = 'style="display: none;"';
+	?>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subtitle" id="sub_7">
+		<span class="iconp_7 glyphicon glyphicon-plus" <?=$clos?> aria-hidden="true"></span>
+		<span class="iconm_7 glyphicon glyphicon-minus" <?=$open?> aria-hidden="true"></span>
+		Documentos
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subpart_7" <?=$open?> >
+		<?php if( count($this->documentosIni) > 0 ) { ?>
+			<table class="table table-striped table-bordered table-hover">
+				<thead><tr><th style="background-color: cornsilk;" colspan=5>Documentos de carga inicial</th></tr>
+				<tr><th><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> Categor�a <br><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> Subcategor�a</th>
+					<th>Concepto</th>
+					<th>Cuenta</th>
+					<th>Nombre</th>
+					<th>Fecha</th>
+				</thead>
+				<tbody>
+				<?php
+				if( count($this->documentosIni) == 0 ) {
+					echo '<tr><td class="center" colspan="10">Sin datos</td></tr>';
+				} else {
+					foreach ($this->documentosIni as $value) { ?>
+						<tr><td><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span><?=utf8_decode($value['CATEG'].'<br><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>'.$value['CATEGSUB'])?></td>
+							<td><?=$value['NMCONCEPTO']?></td>
+							<td><?=$value['FCCREDITO']?></td>
+							<td><a target="_blank" href="<?=utf8_decode( str_replace('http://quantum1.pendulum.com.mx/sysworkflow/es/classic/cases/cases_ShowGastos?archivo=','http://doc.pendulum.com.mx/PM/gastos/documentos/',$value['FCRUTAFILE']))?>"><?=utf8_decode($value['FCNOMBRE'])?></a></td>
+							<td><?=$value['FDFECREGISTRO']?></td>
+						</tr>
+						<?php
+					} }?>
+				</tbody>
+			</table>
+		<?php }
+		if( count($this->documentosSop) > 0 ) { ?>
+			<table class="table table-striped table-bordered table-hover">
+				<thead><tr><th style="background-color: cornsilk;" colspan=6>Documentos de soporte</th></tr>
+				<tr><th>Concepto</th>
+					<th>Cuenta</th>
+					<th>Archivo(s)</th>
+					<th>Autorizador 01</th>
+					<th>Autorizador 02</th>
+					<th>Autorizador 03</th>
+				</thead>
+				<tbody>
+				<?php
+				if( count($this->documentosSop) == 0 ) {
+					echo '<tr><td class="center" colspan="10">Sin datos</td></tr>';
+				} else {
+					foreach ($this->documentosSop as $value) { ?>
+						<tr><td><?=$value['CONCEPTO']?></td>
+							<td><?=$value['FCCREDITO']?></td>
+							<td><?=utf8_decode($value['FCRUTAFILE'])?></td>
+							<td><?=$value['FCRESULTADO01']?></td>
+							<td><?=$value['FCRESULTADO02']?></td>
+							<td><?=$value['FCRESULTADO03']?></td>
+						</tr>
+						<?php
+					} }?>
+				</tbody>
+			</table>
+		<?php }
+		if( count($this->documentosAnx) > 0 ) { ?>
+			<table class="table table-striped table-bordered table-hover">
+				<thead><tr><th style="background-color: cornsilk;" colspan=3>Documentos anexos</th></tr>
+				<tr><th>No.</th>
+					<th>Fecha</th>
+					<th>Archivo(s)</th>
+				</thead>
+				<tbody>
+				<?php
+				if( count($this->documentosAnx) == 0 ) {
+					echo '<tr><td class="center" colspan="10">Sin datos</td></tr>';
+				} else {
+					foreach ($this->documentosAnx as $value) { ?>
+						<tr><td><?=($value['IDCONSEC'])?></td>
+							<td><?=($value['FECREG'])?></td>
+							<?php if($value['FCRUTAFILE'] == ""){ $usable="urldisable"; } else { $usable = ""; } ?>
+							<td><a target="_blank" class="<?=$usable?>" href="<?=$value['FCRUTAFILE']?>" > <?=utf8_decode($value['FCNOMBRE'])?> </a></td>
+						</tr>
+						<?php
+					} }?>
+				</tbody>
+			</table>
+		<?php }
+		if( count($this->documentosCotiza) > 0 ) { ?>
+			<table class="table table-striped table-bordered table-hover">
+				<thead><tr><th style="background-color: cornsilk;" colspan=3>Cotizaciones solicitadas</th></tr>
+				<tr><th>No.</th>
+					<th>Fecha de Registro</th>
+					<th>Detalle</th>
+				</thead>
+				<tbody>
+				<?php
+				if( count($this->documentosCotiza) == 0 ) {
+					echo '<tr><td class="center" colspan="10">Sin datos</td></tr>';
+				} else {
+					foreach ($this->documentosCotiza as $value) { 
+					$hrefCoti = '';
+					if ( $value['RUTACOTIZA'] != '' ) {
+						$hrefCoti = '<a target="_blank" href="' . $value['RUTACOTIZA'] . '">'.utf8_decode($value['FCRAZONSOCIAL']).'</a>';
+					} else {
+						$hrefCoti = '<label>'.utf8_decode($value['FCRAZONSOCIAL']).'</label> - ( Sin archivo adjunto )';
+					}
+					
+						?>
+						<tr><td><?=($value['IDCOTIZACION'])?></td>
+							<td><?=($value['FDFECREGISTRO'])?></td>
+							<td><?=$hrefCoti?></td>
+						</tr>
+						<?php
+					} }?>
+				</tbody>
+			</table>
+		<?php } ?>
+	</div>
+	<!-- END: Documentos -->
+
+	<!-- BEGIN: Seguimiento Etapa -->
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subtitle" id="sub_6">
+		<span class="iconp_6 glyphicon glyphicon-plus" style="display: none;" aria-hidden="true"></span>
+		<span class="iconm_6 glyphicon glyphicon-minus" aria-hidden="true"></span>
+		Bit&aacute;cora de seguimiento: Etapa X Etapa
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 subparte subpart_6">
+		<table class="table table-striped table-bordered table-hover">
+			<thead><tr><th>#</th>
+				<th>Etapa</th>
+				<th>Fecha</th>
+				<th>Usuario</th>
+				<th>Resultado</th>
+				<th>Comentario</th>
+			</thead>
+			<tbody>
+			<?php
+			if( count($this->etapaxetapa) == 0 ) {
+				echo '<tr><td class="center" colspan="6">Sin datos</td></tr>';
+			}
+			foreach ($this->etapaxetapa as $value) { ?>
+				<tr><td><?=$value['DEL_INDEX']?></td>
+					<td><?=$value['NMETAPA']?></td>
+					<td><?=$value['FECREG']?></td>
+					<td><?=utf8_decode( $value['FCUSUARIO'] )?></td>
+					<td><?=$value['FCRESULTADO']?></td>
+					<td><?=utf8_decode($value['FCCOMENTARIOS'])?> </td>
+				</tr>
+				<?php
+			} ?>
+			</tbody>
+		</table>
+	</div>
+	<!-- END: Seguimiento -->
+
+
+</div>
+
+<script type="text/javascript">
+
+	$(function(){
+		$('.subtitle').off('click').on('click',function(){
+			var idsubpart = this.id.split('_')[1];
+			$( '.subpart_'+idsubpart ).fadeToggle();
+			$( '.iconp_'+idsubpart ).toggle();
+			$( '.iconm_'+idsubpart ).toggle();
+		});
+		$('.linkX1').off('click').on({
+			click : function( event ) {
+				var credito = $(this).attr('rel');
+				var url = 'http://quasar.pendulum.com.mx:59001/cobranza/aplicacion/credito/?dmacct=' + credito + '&user=' + $('#usuariopm').val();
+//			var url = 'http://quasar.pendulum.com.mx:59001/cas/aplicacion/url/aplicacionExterna/?dmacct=' + credito + '&user=' + $('#usuariopm').val() +'&procedencia=COB';
+				console.log(url)
+				window.open(url,'X1');
+				return false;
+			}
+		});
+		$('.linkX5').off('click').on({
+			click : function( event ) {
+				var credito = $(this).attr('rel');
+				var url = 'http://quasar.pendulum.com.mx:59001/el/aplicacion/creditos/credito?dmacct=' + credito + '&user=' + $('#usuariopm').val();
+//			var url = 'http://quasar.pendulum.com.mx:59001/cas/aplicacion/url/aplicacionExterna/?dmacct=' + credito + '&user='+$('#usuariopm').val()+'|COB|1&procedencia=EL1';
+				console.log(url)
+				window.open(url,'X5');
+				return false;
+			}
+		});
+		$(".letteruauto.enable").click(function(e){
+			e.preventDefault();
+			var tipo = $(this).attr('data-tipo');
+			var nmcc = $(this).attr('data-cuenta');
+			var cc = $(this).attr('data-credito');
+			var concepto = $(this).attr('data-concepto');
+			$("#linkpd").hide();
+			$.ajax({
+				method: "POST",
+				dataType: "json",
+				url: 'http://quantum2.pendulum.com.mx/gastosfact/public/gastos/detalle/get-comentario/gastoid/<?=$this->idgasto?>/tipo/'+tipo+'/nmcc/'+nmcc+'/cc/'+cc+'/idcon/'+concepto
+			}).done(function(data) {
+				$("#detailModalLabel").text(data.title);
+				$("#tableAutorizaciones").html(data.body);
+				if( data.url != '' ){
+					$("#linkpd").attr('href',data.url);
+					$("#linkpd").show();
+				}
+				$("#modalDetail").modal('show');
+			});
+
+		});
+
+		$(".glyphicon-calendar").click(function(e){
+			e.preventDefault();
+			var concepto = $(this).attr('data-concepto');
+			var credito = $(this).attr('data-credito');
+			$.ajax({
+				method: "POST",
+				dataType: "json",
+				url: 'http://quantum2.pendulum.com.mx/gastosfact/public/gastos/detalle/get-pago-servicio/gastoid/<?=$this->idgasto?>/concepto/'+concepto+'/credito/'+credito
+			}).done(function(data) {
+				$("#detailModalLabel").text(data.title);
+				$("#tableAutorizaciones").html(data.body);
+				$("#modalDetail").modal('show');
+			});
+
+		});
+
+		$(".glyphicon-usd").click(function(e){
+			e.preventDefault();
+			var comprob = $(this).attr('data-comprobacion');
+			var concepto = $(this).attr('data-concepto');
+			var nmc = $(this).attr('data-nmconcepto');
+			var nmcc = $(this).attr('data-cuenta');
+			$.ajax({
+				method: "POST",
+				dataType: "json",
+				url: 'http://quantum2.pendulum.com.mx/gastosfact/public/gastos/detalle/get-comprobaciones/gastoid/<?=$this->idgasto?>/concepto/'+concepto+'/comprob/'+comprob+'/nmc/'+nmc+'/nmcc/'+nmcc
+			}).done(function(data) {
+				$("#detailModalLabel").text(data.title);
+				$("#tableAutorizaciones").html(data.body);
+				$("#modalDetail").modal('show');
+			});
+		});
+
+		$(".glyphicon-folder-open").click(function(e){
+			e.preventDefault();
+			var comprob = $(this).attr('data-comprobacion');
+			var concepto = $(this).attr('data-concepto');
+			var nmc = $(this).attr('data-nmconcepto');
+			var nmcc = $(this).attr('data-cuenta');
+			$.ajax({
+				method: "POST",
+				dataType: "json",
+				url: 'http://quantum2.pendulum.com.mx/gastosfact/public/gastos/detalle/get-documentos/gastoid/<?=$this->idgasto?>/concepto/'+concepto+'/comprob/'+comprob+'/nmc/'+nmc+'/nmcc/'+nmcc
+			}).done(function(data) {
+				$("#detailModalLabel").text(data.title);
+				$("#tableAutorizaciones").html(data.body);
+				$("#modalDetail").modal('show');
+			});
+		});
+
+	});
+
+</script>

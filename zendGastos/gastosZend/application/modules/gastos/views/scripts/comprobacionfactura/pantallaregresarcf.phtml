@@ -1,0 +1,68 @@
+<style>
+	.ui-jqgrid tr.jqgrow { cursor: pointer; }
+	.modal.fade.in#modalDetail { top: 9%; }
+	.modal#modalDetail { width: 95%; left: 25%; }
+	.modal-header .close { color: #000; }
+	.container { margin: 0 18px 10px 2px!important; }
+	ul.typeahead.dropdown-menu { font-size: 10px; }
+	ul.typeahead.dropdown-menu a { line-height: 10px; }
+	.txtlabel { font-size: 12px; text-align: left; }
+	input[type="text"] { font-size: 12px; }
+	.ui-jqgrid tr.jqgrow td { white-space: initial!important; }
+</style>
+
+
+<style>
+<!--
+#archivo{
+	background-color: #ffffff !important;
+
+}
+.hasDatepicker {
+	background-color: white!important;
+    cursor: pointer!important;
+}
+/* enable absolute positioning */
+.inner-addon {
+    position: relative;
+}
+
+/* style icon */
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 4px;
+  pointer-events: none;
+  top: 7px;
+}
+#divMsjXML{
+	font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
+	font-size: 16px;
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  6px;}
+.right-addon .glyphicon { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  24px; width: 188px; }
+.right-addon input { padding-right: 30px; }
+-->
+</style>
+<br>
+<div class="container">
+		<div>
+			<div class="row">
+				<div class="span-6">
+						<label for="idgastobuscar">Ingrese No. Caso</label>
+						<input type="text" id="idgastobuscar" name="idgastobuscar" maxlength="15" placeholder="Gasto">
+						<button type="button" id="btnNumGasto" name="btnNumGasto" class="btn btn-primary">Buscar...</button>
+				</div>
+				<div class="span-6"></div>
+			</div>
+		</div>
+
+	<div id="inpTableLisResultado">
+
+	</div>
+
+</div>

@@ -1,0 +1,113 @@
+<div>
+    <label class="tittle_iframe">Catálogo Remesas</label>
+</div>
+
+<!-- Button trigger modal -->
+<div class="btn-group" role="group" aria-label="">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"><span
+            class="glyphicon glyphicon-plus"></span>Registrar
+    </button>
+    <!--	<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-download-alt"></span> Deshabilitar</button>-->
+</div>
+
+<!-- Grilla  -->
+<div>
+    <table id="jqGridRemesa"></table>
+    <div id="jqGridjqGridRemesa"></div>
+</div>
+<!--<input type="hidden" id="jsondata" name="jsondata" value="--><?php //echo $this->jsondata; ?><!--" />-->
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/js/gastos/catalogo-remesas.js"></script>
+
+
+<!--Modal Para Registar-->
+<div class="modal fade" id="exampleModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close btnCerrar" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel"><span id="spTitulomodal"> Registrar </span> Remesa </h4>
+            </div>
+            <div class="modal-body">
+                <div class="content">
+                    <form id="formRemesa" name="formRemesa" method="post" role="form">
+                        <!-- CAMPO Ocultos  -->
+                        <input type="hidden" id="inpIDremesa" name="inpIDremesa">
+                        <input type="hidden" id="inpAccion" name="inpAccion" value="Insertar"/>
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label"><span class="label-oblig">( * )</span>
+                                Nombre Remesa:</label>
+                            <input id="inpNombre" name="inpNombre" maxlength="40" type="text"
+                                   class="form-control  soloLetras" style="width:85%"/>
+                            <!-- Componente Mesj-->
+                            <div class="error" style="display:none"><b class="border-notch notch"></b>
+                            </div>
+                            <div style="clear: both"></div>
+                            <!-- Componente Mesj-->
+
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label"><span class="label-oblig">( * )</span>
+                                Monto:</label>
+                            <input id="inpMonto" name="inpMonto" maxlength="40" type="text"
+                                   class="form-control soloDecimal" style="width:85%"/>
+
+                            <!-- Componente Mesj-->
+                            <div class="error" style="display:none"><b class="border-notch notch"></b>
+                            </div>
+                            <!-- Componente Mesj-->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label"><span class="label-oblig">( * )</span>
+                                Regional:</label>
+                            <input id="inpRegional" name="inpRegional" maxlength="40" type="text" class="form-control"
+                                   style="width:85%"/>
+
+                            <!-- Componente Mesj-->
+                            <div class="error" style="display:none"><b class="border-notch notch"></b>
+                            </div>
+                            <!-- Componente Mesj-->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label"><span class="label-oblig">( * )</span>
+                                Código Anticipo:</label>
+                            <input id="inpCoAnticipo" name="inpCoAnticipo" maxlength="40" type="text"
+                                   class="form-control soloCodigo" style="width:85%"/>
+
+                            <!-- Componente Mesj-->
+                            <div class="error" style="display:none"><b class="border-notch notch"></b>
+                            </div>
+                            <!-- Componente Mesj-->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label"><span class="label-oblig">( * )</span>
+                                Concepto:</label>
+                            <input id="inpConcepto" name="inpConcepto" maxlength="40" type="text" class="form-control"
+                                   style="width:85%"/>
+
+                            <!-- Componente Mesj-->
+                            <div class="error" style="display:none"><b class="border-notch notch"></b>
+                            </div>
+                            <!-- Componente Mesj-->
+                        </div>
+                        <button class="btn btnCerrar" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+                        <button id="btnGuardar" type="submit" class="btn btn-primary"><span id="bntTitulomodal"> Registrar </span>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <span class="label-oblig-desc"> Lo campos con asteriscos(*) son obligatorios </span>
+
+                <span class="label-oblig-desc msjRespuesta text-center"> </span>
+            </div>
+
+        </div>
+    </div>
+</div>

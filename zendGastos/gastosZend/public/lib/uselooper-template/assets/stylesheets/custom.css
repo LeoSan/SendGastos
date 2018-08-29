@@ -1,0 +1,29 @@
+/* put your own styles to customize and override the theme */
+.app-main{
+ padding-top: 0em;
+}
+
+@media (min-width: 768px){
+    .app-main {
+        padding-left: 0rem;
+    }
+}
+
+.pace-progress{
+    margin-top: -4.13%;
+}
+
+.control-label-selectGroup{
+    top: -20%!important;
+    color: #686f76!important;
+    font-size: 0.85em!important;
+}
+
+.form-label-group select {
+    height: calc(2.90rem + 2px)!important;
+    padding-top: 18px!important;
+}
+
+.hide{
+    display: none;
+}

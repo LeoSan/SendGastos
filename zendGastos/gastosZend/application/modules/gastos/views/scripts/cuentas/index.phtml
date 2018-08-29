@@ -1,0 +1,347 @@
+<link rel="stylesheet" media="screen" href="<?php echo $this->baseUrl; ?>/lib/bootstrap_3_3/css/bootstrap.min.css">
+<link rel="stylesheet" media="screen" href="<?php echo $this->baseUrl; ?>/lib/bootstrap_3_3/css/bootstrap-theme.min.css">
+<link rel="stylesheet" media="screen" href="<?php echo $this->baseUrl; ?>/lib/jqgrid_5.1.1/css/ui.jqgrid.css">
+<link rel="stylesheet" media="screen" href="<?php echo $this->baseUrl; ?>/lib/jqgrid_5.1.1/css/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" media="screen" href="<?php echo $this->baseUrl; ?>/lib/jqgrid_5.1.1/css/ui.jqgrid-bootstrap-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/jqgrid_5.1.1/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/bootstrap_3_3/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/jqgrid_5.1.1/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/jqgrid_5.1.1/js/i18n/grid.locale-es.js"></script>
+<!-- <script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/bootstrap_3_3/datepicker/locales/bootstrap-datepicker.es.min.js"></script> -->
+
+<style>
+	#tableGastosCreditos {
+		font-size: 10px;
+		overflow-x: hidden;
+	}
+	.row {
+    	margin-right: 0!important;
+    }
+	.ui-jqgrid-labels {
+		font-size: 9px;
+	}
+	.form-control {
+		height: 24px!important;
+		font-size: 12px!important;
+	}
+a.clearsearchclass {
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+	table.linksspace a {
+		margin: 5px;
+	}
+	.jqgfirstrow {
+		display: none;
+	}
+	.ui-jqgrid-bdiv div {
+		overflow-x: hidden;
+	}
+	.ui-jqgrid .ui-search-table td.ui-search-clear {
+    	width: 0!important;
+	}
+	.ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {
+    	white-space: normal!important;
+	}
+	.ui-jqgrid .ui-jqgrid-htable .ui-th-div {
+    	height: 24px!important;
+	}
+	.ui-jqgrid-htable.table{
+		margin-bottom: 0;
+	}
+	.table>tbody>tr>td, .table>thead>tr>th {
+		padding: 4px!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(1),
+	#tableGastosCreditos_GASTO{
+		width: 5%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(2),
+	#tableGastosCreditos_documents{
+		width: 4%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(3),
+	#tableGastosCreditos_CATEGORIA {
+		width: 10%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(4),
+	#tableGastosCreditos_NOMBRECONCEPTO {
+		width: 10%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(5),
+	#tableGastosCreditos_NOMBRESOLICITA {
+		width: 8%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(6),
+	#tableGastosCreditos_IMPORTE {
+		width: 7.1%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(7),
+	#tableGastosCreditos_IMPORTECOMPROBADO {
+		width: 7.1%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(8),
+	#tableGastosCreditos_FECHACOMPROBA {
+		width: 7.1%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(9),
+	#tableGastosCreditos_ESFACTURABLE {
+		width: 7.1%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(10),
+	#tableGastosCreditos_STATUS {
+		width: 6.5%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(11),
+	#tableGastosCreditos_FDFECSERVPAGADODEL {
+		width: 6.5%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(12),
+	#tableGastosCreditos_FDFECSERVPAGADOAL {
+		width: 6.5%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(13),
+	#tableGastosCreditos_FDFECREALPAGO {
+		width: 6.5%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(14),
+	#tableGastosCreditos_FDFECCUMBREPAGO {
+		width: 6.5%!important;
+	}
+	.jqgrow.ui-row-ltr td:nth-child(15),
+	#tableGastosCreditos_FDFECCUMBREPAGO {
+		width: 6.5%!important;
+	}
+	#gsh_tableGastosCreditos_documents .ui-search-table,
+	#gsh_tableGastosCreditos_BTNACC div {
+		display:none;
+	}
+	.form-control {
+		padding: 0 1px!important;
+	}
+	.viewImages{
+		cursor: pointer;
+	}
+	.ui-jqgrid tr.jqgrow td {
+		white-space: normal!important;
+	}
+	.getDetalle, .jqgridurl {
+		color: blue!important;
+		cursor: pointer;
+		font-style: italic;
+	}
+	.getDetalle:hover, .jqgridurl:hover {
+		text-decoration: underline!important;
+	}
+</style>
+
+
+<div class="row">
+	<div class="col-xs-12 tablehide">
+		<table id="tableGastosCreditos" class="table table-hover"></table>
+		<div id="jqGridPager"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(function(){
+		var jsondata = '<?=$this->campos?>';
+		jsondata = $.parseJSON(jsondata);
+
+		$.jgrid.styleUI.Bootstrap.base.rowTable = "table table-bordered table-striped";
+		//$.jgrid.defaults.width = 780;
+
+		var baseUrl= '<?=$this->baseUrl?>';
+		$.datepicker.regional["es"];
+
+		$("#tableGastosCreditos").jqGrid({
+			datatype: "local",
+			data: jsondata,
+			colNames:[
+				'Gasto',
+				'', 
+				'Categoria',
+				'Concepto',
+				'Solicitante',
+				'Importe',
+				'Importe comprobado',
+				'Fecha de comprobacion',
+				'Es reembolsable?',
+				'Estado'  <?php if( $this->mostrarPS == 1 ) {    ?>,
+				'Pagado desde',
+				'Pagado hasta',
+				'Fecha real de pago',
+				'Fecha prox pago',
+				'Acciones'
+				<?php } ?>
+		   	],
+			colModel: [
+				{	index:   'GASTO',
+					name:    'GASTO',
+					sorttype:function(cell, obj){
+						return Number( $(cell).text() );
+					},
+					searchoptions: { sopt: ["cn","eq"] }
+				},
+				{ index: 'documents',         name: 'documents',        searchoptions: {searchhidden: true} },
+				{ index: 'CATEGORIA',         name: 'CATEGORIA',		searchoptions: { sopt: ["cn","eq"] } },
+				{ index: 'NOMBRECONCEPTO',    name: 'NOMBRECONCEPTO',	searchoptions: { sopt: ["cn","eq"] } },
+				{ index: 'NOMBRESOLICITA',    name: 'NOMBRESOLICITA',	searchoptions: { sopt: ["cn","eq"] } },
+				{ index: 'IMPORTE',           name: 'IMPORTE',          sorttype: 'number', formatter: 'number', align: 'right', formatoptions :{ decimalSeparator: ".", decimalPlaces:2, thousandsSeparator:" "} },
+				{ index: 'IMPORTECOMPROBADO', name: 'IMPORTECOMPROBADO',sorttype: 'number', formatter: 'number', align: 'right', formatoptions :{ decimalSeparator: ".", decimalPlaces:2, thousandsSeparator:" "} },
+				{ index: 'FECHACOMPROBA',     name: 'FECHACOMPROBA'     },
+				{ index: 'ESFACTURABLE',      name: 'ESFACTURABLE'      },
+				{ index: 'STATUS',            name: 'STATUS',           searchoptions: { sopt: ["cn","eq"] } }<?php if( $this->mostrarPS == 1 ) {    ?>,
+				{ index: 'FDFECSERVPAGADODEL',name: 'FDFECSERVPAGADODEL',editable:true, editoptions: { dataInit: function(el) { setTimeout(function() { $(el).datepicker({dateFormat:'dd-mm-y'}); }, 50); } }},
+				{ index: 'FDFECSERVPAGADOAL', name: 'FDFECSERVPAGADOAL' ,editable:true, editoptions: { dataInit: function(el) { setTimeout(function() { $(el).datepicker({dateFormat:'dd-mm-y'}); }, 50); } } },
+				{ index: 'FDFECREALPAGO',     name: 'FDFECREALPAGO'     },
+				{ index: 'FDFECCUMBREPAGO',   name: 'FDFECCUMBREPAGO'   },
+				{ index: 'BTNACC',            name: 'BTNACC'            }
+				<?php } ?>
+			],
+			viewrecords: true,
+			autowidth: true,
+			styleUI : "Bootstrap",
+			shrinkToFit: true,
+			regional : 'es',
+			height: 350,
+			rowNum: 200,
+//			rowList : [15,30,50,100,200,500,1000],
+			ignoreCase: true,
+			jsonReader : { repeatitems: false }
+//			pager: "#jqGridPager"
+		});
+
+		$("#tableGastosCreditos").jqGrid('filterToolbar', { searchOnEnter: false, stringResult: true });
+
+		$("#tableGastosCreditos").jqGrid('bindKeys');
+
+	/*	setTimeout( function(){
+			$('.table.table-bordered').find('th').on('click',function(){
+				$(".btnEdit").off('click').off('click').on('click',function(e){
+					e.preventDefault();
+					$('#tableGastosCreditos').editRow( $(this).parents('tr')[0].id );
+				});
+				$(".btnSave").off('click').on('click',function(e){
+					e.preventDefault();
+
+					var caso = $(this).attr("data-case");
+					var credito = $(this).attr("data-credito");
+					var concepto = $(this).attr("data-concepto");
+
+					$("#tableGastosCreditos").jqGrid('setGridParam', {editurl:'/gastosfact/public/gastos/cuentas/edit-row/idgasto/'+caso+'/credito/'+credito+'/concepto/'+concepto});
+					var indice = $(this).parents('tr')[0].id;
+
+					var del = $("#"+indice+"_FDFECSERVPAGADODEL").val();
+					var al  = $("#"+indice+"_FDFECSERVPAGADOAL").val();
+
+					// Validar fechas
+					
+					if( del == "" && al != "" ) {
+						alert("Favor de llenar los campos faltantes");
+						$("#"+indice+"_FDFECSERVPAGADODEL").focus();
+						return;
+					} else if( del != "" && al == "" ) {
+						alert("Favor de llenar los campos faltantes");
+						$("#"+indice+"_FDFECSERVPAGADOAL").focus();
+						return;
+					} else if( del == "" && al == "" ) {
+						$("#tableGastosCreditos").jqGrid('restoreRow',indice);
+						return;
+					} else { 
+						$("#tableGastosCreditos").jqGrid('saveRow', indice );
+					}
+				});
+			});
+*//*
+			$("td.ui-search-input input").change(function(){
+				$(".btnEdit").off('click').on('click',function(e){
+					e.preventDefault();
+					$('#tableGastosCreditos').editRow( $(this).parents('tr')[0].id );
+				});
+				$(".btnSave").off('click').on('click',function(e){
+					e.preventDefault();
+
+					var caso = $(this).attr("data-case");
+					var credito = $(this).attr("data-credito");
+					var concepto = $(this).attr("data-concepto");
+
+					$("#tableGastosCreditos").jqGrid('setGridParam', {editurl:'/gastosfact/public/gastos/cuentas/edit-row/idgasto/'+caso+'/credito/'+credito+'/concepto/'+concepto});
+					var indice = $(this).parents('tr')[0].id;
+
+					var del = $("#"+indice+"_FDFECSERVPAGADODEL").val();
+					var al  = $("#"+indice+"_FDFECSERVPAGADOAL").val();
+
+					// Validar fechas
+					
+					if( del == "" && al != "" ) {
+						alert("Favor de llenar los campos faltantes");
+						$("#"+indice+"_FDFECSERVPAGADODEL").focus();
+						return;
+					} else if( del != "" && al == "" ) {
+						alert("Favor de llenar los campos faltantes"); 
+						$("#"+indice+"_FDFECSERVPAGADOAL").focus();
+						return;
+					} else if( del == "" && al == "" ) {
+						$("#tableGastosCreditos").jqGrid('restoreRow',indice);
+						return;
+					} else { 
+						$("#tableGastosCreditos").jqGrid('saveRow', indice );
+					}
+				});
+				$(".getDetalle").off('click').on('click',function(){
+					var caso = $(this).attr('data-caso');
+					window.open(baseUrl + '/catalogos/miexpediente/getdetalle/gastoid/'+caso+'/etapa/0/appid/0/delindex/0', 'Detalle', 'directories=no, 	titlebar=no, toolbar=no, menubar=no, location=no, status=no, scrollbars=yes, resizable=yes, height=700, width=1000');
+				}); 
+			});
+			
+		},1000 );
+*//*
+		$(".btnEdit").off('click').on('click',function(e){
+			e.preventDefault();
+			console.info( $(this).parents('tr')[0].id );
+			$('#tableGastosCreditos').editRow( $(this).parents('tr')[0].id );
+		});
+*/
+		$(".btnSave").on('click',function(e){
+			e.preventDefault();
+
+			var caso = $(this).attr("data-case");
+			var credito = $(this).attr("data-credito");
+			var concepto = $(this).attr("data-concepto");
+
+			$("#tableGastosCreditos").jqGrid('setGridParam', {editurl:'/gastosfact/public/gastos/cuentas/edit-row/idgasto/'+caso+'/credito/'+credito+'/concepto/'+concepto});
+			var indice = $(this).parents('tr')[0].id;
+
+			var del = $("#"+indice+"_FDFECSERVPAGADODEL").val();
+			var al  = $("#"+indice+"_FDFECSERVPAGADOAL").val();
+
+			// Validar fechas
+			
+			if( del == "" && al != "" ) {
+				alert("Favor de llenar los campos faltantes");
+				$("#"+indice+"_FDFECSERVPAGADODEL").focus();
+				return;
+			} else if( del != "" && al == "" ) {
+				alert("Favor de llenar los campos faltantes");
+				$("#"+indice+"_FDFECSERVPAGADOAL").focus();
+				return;
+			} else if( del == "" && al == "" ) {
+				$("#tableGastosCreditos").jqGrid('restoreRow',indice);
+				return;
+			} else { 
+				$("#tableGastosCreditos").jqGrid('saveRow', indice );
+			}
+		});
+		
+		$(".getDetalle").click(function(){
+			var caso = $(this).attr('data-caso');
+			window.open(baseUrl + '/catalogos/miexpediente/getdetalle/gastoid/'+caso+'/etapa/0/appid/0/delindex/0', 'Detalle', 'directories=no, titlebar=no, toolbar=no, menubar=no, location=no, status=no, scrollbars=yes, resizable=yes, height=700, width=1000');
+		});
+
+	});
+</script>

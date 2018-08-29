@@ -1,0 +1,21 @@
+<?php if( count($this->documentosinicio) > 0 ) { ?>
+<h4 style="font-size: 1.50em;"><?php echo "Documento: " .  $this->nmdocumento; ?></h4>
+<table id="creditosdocumentosinicio" class="table table-bordered">
+	<thead>
+    	<tr>
+      		<th><input type="checkbox" id="checkAll" name="checkAll" value="0" ></th>
+      		<th>Crédito</th>
+    	</tr>
+  	</thead>
+  	<tbody>
+  		<?php foreach($this->documentosinicio as $item): ?>
+    	<tr>
+      		<td><input type="checkbox" name="option1" value="<?php echo $item['CONSECUTIVO'];?>" credito="<?php echo $item['CREDITO'];?>"></td>
+      		<td><?php echo $item['CREDITO'];?></td>
+    	</tr>
+    	<?php endforeach; ?>
+  	</tbody>
+</table>
+<?php } else { ?>
+	<p>No hay registros</p>
+<?php } ?>

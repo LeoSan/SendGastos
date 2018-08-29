@@ -1,0 +1,101 @@
+<?php if( count($this->comprobaciones) > 0 ) { ?>
+<?php 
+  	$invisible = '';
+  	if ( $this->tipocaptura == '1' ) {
+  		$invisible = ' style="display:none;" ';
+	} 
+  	?> 
+<table class="table table-bordered">
+	<thead>
+    	<tr>
+    		<th></th>
+      		<th>Categoria/Subcategoria<br>Concepto</th>
+      		<th><?php echo $this->tipocapturaLabel;?></th>
+      		<th>Verificación final</th>
+      		<th style="text-align:center;">Importe solicitado</th>
+            <?php
+                $flag = 0;
+                foreach ($this->comprobaciones as $item){
+                    if($flag == 0){
+                        if( isset( $item['FECHA_EJECUCION'] ) && 
+                            ( $item['FECHA_EJECUCION'] != '' || $item['FECHA_EJECUCION'] != NULL ) ) {
+                            $flag =1;
+            ?>
+                            <th style="text-align:center;">Fecha ejecución</th>
+            <?php
+                        }
+                    }
+                }
+            ?>
+      		<th style="text-align:center;">Importe real <br> (sin IVA) <input type="checkbox" id="chkSetValAll" title="Insertar importe a todos" /></th>
+      		<th <?=$invisible?> style="text-align:center;">Comprobante <input type="checkbox" id="chkSetFacAll" title="Insertar comprobante a todos" /></th>
+      		<?php if($this->haypagoserv > 0){ ?>
+      		<th <?=$invisible?> >Fecha real<br>Pago <input type="checkbox" data-tipo="fecharealpago" class="chkServicioAll fecharealpago" title="Insertar fecha a todos" /> </th>
+      		<th <?=$invisible?> >Remesa <input type="checkbox" data-tipo="remesa" class="chkServicioAll remesa" title="Insertar fecha a todos" /> </th>
+      		<th <?=$invisible?> style="text-align:center;" colspan="2">Sevicios pagados <br>Del. <input type="checkbox" data-tipo="serviciodel" class="chkServicioAll serviciodel" title="Insertar fecha a todos" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Al. <input type="checkbox" data-tipo="servicioal" class="chkServicioAll servicioal" title="Insertar fecha a todos" /> </th>
+      		<th <?=$invisible?> >¿Pagado<br>previamente?  </th>
+      		<th <?=$invisible?> >Fecha próximo<br>Pago <input type="checkbox" data-tipo="fpagoanterior" class="chkServicioAll fpagoanterior" title="Insertar fecha a todos" /> </th>
+      		<th <?=$invisible?> >Comentarios <input type="checkbox" data-tipo="comentario" class="chkServicioAll comentario" title="Insertar fecha a todos" /> </th>
+      		<?php } ?>
+    	</tr>
+  	</thead>
+  	<tbody>
+  		<?php $index = 1; $total = 0; $impReal = 0;
+  		foreach($this->comprobaciones as $item): ?>
+    	<tr>
+    		<td><?php
+    		$bloqueado = ''; 
+    		if( $item['VALIDA'] ) {
+    			$bloqueado = 'readonly disabled';
+    		} ?></td>
+      		<td><?php echo $item['CATEGSUB'];?> </td>
+      		<td><?php echo $item['CREDITO'];?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $item['VALOR'];?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $item['CENTROCOSTOS'];?><br><?php echo $item['DEUDOR'];?></td>
+      		<td><?php echo $item['VERIFFINAL'];?></td>
+      		<td style="text-align:right;padding-top: 14PX;" ><?php echo $item['IMPORTECOMAS'];?></td>
+            <?php
+            if( isset($item['FECHA_EJECUCION']) && ($item['FECHA_EJECUCION'] != '' || $item['FECHA_EJECUCION'] != NULL ) ){
+            ?>
+                <td style="text-align:CENTER;padding-top: 14PX;" ><input <?=$bloqueado?> class="input-mini campodatepicker feejecucion" type="text" id="feejecucion-<?php echo $item['VALOR'];?>-<?php echo $index;?>" name="feejecucion-<?php echo $item['VALOR'];?>-<?php echo $index;?>" maxlength="4" idsolicitud="<?php echo $item['IDSOLICITUD'];?>" idconcepto="<?php echo $item['IDCONCEPTO'];?>" credito="<?php echo $item['CREDITO']!=''?$item['CREDITO']:$item['VALOR'];?>" index="<?php echo $index; ?>" fechacomproba="<?php echo $item['FECHAREGISTRO'];?>" value="<?php echo $item['FECHA_EJECUCION'];?>" /></td>
+            <?php
+            }
+            ?>
+      		<td style="text-align:right;" ><input class="input-mini importereal" <?=$bloqueado?> type="text" id="impoReal-<?php echo $item['VALOR'];?>" name="impoReal-<?php echo $item['VALOR'];?>" maxlength="10" idsolicitud="<?php echo $item['IDSOLICITUD'];?>" idconcepto="<?php echo $item['IDCONCEPTO'];?>" credito="<?php echo $item['CREDITO']!=''?$item['CREDITO']:$item['VALOR'];?>" index="<?php echo $index; ?>" fechacomproba="<?php echo $item['FECHAREGISTRO'];?>" value="<?php echo $item['IMPORTEREAL'];?>" /></td>
+      		<td <?=$invisible?> style="text-align:right;" >
+      		<select  id="impoAsigSel-<?php echo $index;?>" <?=$bloqueado?> name="impoAsigSel-<?php echo $index;?>" class="input-mini importereal">
+      			<option value="0">-Seleccione-</option>
+      			<?php foreach ($this->comprobantes as $comp): ?>
+      			<option <?php echo (isset($item['IDCOMPROBACION']) && $item['IDCOMPROBACION'] === $comp['IDCOMPROBACION'])?'selected="selected"':''; ?> value="<?php echo $comp['IDCOMPROBACION']; ?>"><?php echo $comp['FCNOFACTURA'] . ' - ' . $comp['FNIMPORTE']; ?></option>
+      			<?php endforeach; ?>
+      		</select>
+      		</td>
+      		<?php if($this->haypagoserv > 0){ ?>
+      		<td <?=$invisible?> style="text-align:right;" ><input <?=$bloqueado?> class="input-mini campodatepicker fecharealpago" style="font-size: 10px;" type="text" id="fPago-<?php echo $item['VALOR'];?>-<?php echo $index;?>" name="fPago-<?php echo $item['VALOR'];?>-<?php echo $index;?>" maxlength="9" idsolicitud="<?php echo $item['IDSOLICITUD'];?>" idconcepto="<?php echo $item['IDCONCEPTO'];?>" credito="<?php echo $item['CREDITO']!=''?$item['CREDITO']:$item['VALOR'];?>" index="<?php echo $index; ?>" fechacomproba="<?php echo $item['FECHAREGISTRO'];?>" value="<?php echo $item['FDFECREALPAGO'];?>" maxlength="16" placeholder="Fecha" readonly /></td>
+      		<td <?=$invisible?> style="text-align:right;" ><input <?=$bloqueado?> class="input-mini remesa" type="text" id="remesa-<?php echo $item['VALOR'];?>-<?php echo $index;?>" name="remesa-<?php echo $item['VALOR'];?>-<?php echo $index;?>" maxlength="4" idsolicitud="<?php echo $item['IDSOLICITUD'];?>" idconcepto="<?php echo $item['IDCONCEPTO'];?>" credito="<?php echo $item['CREDITO']!=''?$item['CREDITO']:$item['VALOR'];?>" index="<?php echo $index; ?>" fechacomproba="<?php echo $item['FECHAREGISTRO'];?>" value="<?php echo $item['FCREMESA'];?>" /></td>
+      		<td <?=$invisible?> style="text-align:right;" ><input <?=$bloqueado?> class="input-mini campodatepicker serviciodel" style="font-size: 10px;" type="text" id="servicioDel-<?php echo $item['VALOR'];?>-<?php echo $index;?>" name="servicioDel-<?php echo $item['VALOR'];?>-<?php echo $index;?>" maxlength="9" idsolicitud="<?php echo $item['IDSOLICITUD'];?>" idconcepto="<?php echo $item['IDCONCEPTO'];?>" credito="<?php echo $item['CREDITO']!=''?$item['CREDITO']:$item['VALOR'];?>" index="<?php echo $index; ?>" fechacomproba="<?php echo $item['FECHAREGISTRO'];?>" value="<?php echo $item['FDFECSERVPAGADODEL'];?>" maxlength="16" placeholder="Fecha" readonly /></td>
+      		<td <?=$invisible?> style="text-align:right;" ><input <?=$bloqueado?> class="input-mini campodatepicker servicioal" type="text" style="font-size: 10px;" id="servicioAl-<?php echo $item['VALOR'];?>-<?php echo $index;?>" name="servicioAl-<?php echo $item['VALOR'];?>-<?php echo $index;?>" maxlength="9" idsolicitud="<?php echo $item['IDSOLICITUD'];?>" idconcepto="<?php echo $item['IDCONCEPTO'];?>" credito="<?php echo $item['CREDITO']!=''?$item['CREDITO']:$item['VALOR'];?>" index="<?php echo $index; ?>" fechacomproba="<?php echo $item['FECHAREGISTRO'];?>" value="<?php echo $item['FDFECSERVPAGADOAL'];?>" maxlength="16" placeholder="Fecha" readonly /></td>
+      		<td <?=$invisible?> style="text-align:center;"><input <?=$bloqueado?> class="pagadoanteriormente" style="font-size: 10px;" type="checkbox" id="chkPagadoAnteriormente<?php echo $item['VALOR'];?>-<?php echo $index;?>" name="chkPagadoAnteriormente<?php echo $item['VALOR'];?>-<?php echo $index;?>" title="Pagado Anteriormente" idsolicitud="<?php echo $item['IDSOLICITUD'];?>" idconcepto="<?php echo $item['IDCONCEPTO'];?>" credito="<?php echo $item['CREDITO']!=''?$item['CREDITO']:$item['VALOR'];?>" index="<?php echo $index; ?>" fechacomproba="<?php echo $item['FECHAREGISTRO'];?>" <?php echo $item['FCPAGADOPREVIAMENTE']=='S'?'checked':'' ?> /></td>
+      		<td <?=$invisible?> style="text-align:right;" ><input <?=$bloqueado?> class="input-mini campodatepicker fpagoanterior" style="font-size: 10px;" type="text" id="fPagoAnt-<?php echo $item['VALOR'];?>-<?php echo $index;?>" name="fPagoAnt-<?php echo $item['VALOR'];?>-<?php echo $index;?>" maxlength="9" idsolicitud="<?php echo $item['IDSOLICITUD'];?>" idconcepto="<?php echo $item['IDCONCEPTO'];?>" credito="<?php echo $item['CREDITO']!=''?$item['CREDITO']:$item['VALOR'];?>" index="<?php echo $index; ?>" fechacomproba="<?php echo $item['FECHAREGISTRO'];?>" value="<?php echo $item['FDFECCUMBREPAGO'];?>" readonly /></td>
+      		<td <?=$invisible?> style="text-align:right;" ><input <?=$bloqueado?> class="input-mini comentario" style="font-size: 10px;" type="text" id="coment-<?php echo $item['VALOR'];?>-<?php echo $index;?>" name="coment-<?php echo $item['VALOR'];?>-<?php echo $index;?>" maxlength="100" idsolicitud="<?php echo $item['IDSOLICITUD'];?>" idconcepto="<?php echo $item['IDCONCEPTO'];?>" credito="<?php echo $item['CREDITO']!=''?$item['CREDITO']:$item['VALOR'];?>" index="<?php echo $index; ?>" fechacomproba="<?php echo $item['FECHAREGISTRO'];?>" value="<?php echo $item['FCCOMENTARIOPAGOSERV'];?>" /></td>
+    		<?php } ?>
+    	</tr>
+    	<?php $index++; $total += (float)$item['IMPORTESOLIC']; $impReal += (float)$item['IMPORTEREAL']; endforeach; ?>
+  	</tbody>
+  	<tfoot>
+  		<tr>
+  			<th colspan="3" style="text-align:right;">Total comprobado</th>
+      		<th style="text-align:right;"><?php echo "$ " .  number_format($total, 2, ".", ","); ?></th>
+      		<th style="text-align:right;" id="totalImporteReal" ><?php echo "$ " .  number_format($impReal, 2, ".", ","); ?></th>
+      		<?php if($this->haypagoserv > 0){ ?>
+      		<th></th>
+      		<th></th>
+      		<th></th>
+      		<th></th>
+      		<th></th>
+      		<th></th>
+      		<?php } ?>
+    	</tr>
+  	</tfoot>
+</table>
+<?php } else { ?>
+	<p>No hay registros</p>
+<?php } ?>

@@ -1,0 +1,82 @@
+<style>
+<!--
+#archivo{
+	background-color: #ffffff !important;
+}
+-->
+</style>
+<br>
+<div class="container-fluid" id="catalogo-content"><!-- Container -->
+	<div class="panel panel-info">
+		<div class="panel-body">
+			<div class="container-fluid">	
+				<div class="row">
+		        	<div class="span12">
+		        		<div class="row-fluid">
+							<?php if( count($this->comprobaciones) > 0 ) { ?>
+<table class="table table-bordered">
+	<thead>
+		<tr style="background-color: #343467;color: #FFF;">
+      		<th colspan="10" >DETALLE DE PAGO DE SERVICIOS</th>
+    	</tr>
+    	<tr>
+      		<th>Cuenta</th>
+      		<th>Factura</th>
+      		<th>Importe</th>
+      		<th style="text-align:center;">Fecha real pago</th>
+      		<th style="text-align:center;">Remesa</th>
+      		<th style="text-align:center;">Servicio pagado del</th>
+      		<th>Servicio pagado al</th>
+      		<th>Pagado previamente</th>
+      		<th>Fecha próximo pago</th>
+      		<th>Comentario</th>
+    	</tr>
+  	</thead>
+  	<tbody>
+  		<?php $index = 1; $total = 0; $impReal = 0; foreach($this->comprobaciones as $item): ?>
+    	<tr>
+      		<td><?php echo $item['FCCREDITOCARTERA'];?></td>
+      		<td><?php echo $item['FCNOFACTURA'];?></td>
+      		<td><?php echo "$ " .  number_format($item['FNIMPORTECOMPROBA'], 2, ".", ","); ?></td>
+      		<td><?php echo $item['FECREALPAGO'];?></td>
+      		<td><?php echo $item['FCREMESA'];?></td>
+      		<td><?php echo $item['FECSERVPAGADODEL'];?></td>
+      		<td><?php echo $item['FECSERVPAGADOAL'];?></td>
+      		<td><?php echo $item['FCPAGADOPREVIAMENTE'];?></td>
+      		<td><?php echo $item['FECCUMBREPAGO'];?></td>
+      		<td><?php echo $item['FCCOMENTARIOPAGOSERV'];?></td>
+    	</tr>
+    	<?php $index++; $total += (float)$item['FNIMPORTECOMPROBA']; endforeach; ?>
+  	</tbody>
+  	<tfoot>
+  		<tr>
+  			<th colspan="2" style="text-align:right;">Total comprobado</th>
+      		<th style="text-align:right;"><?php echo "$ " .  number_format($total, 2, ".", ","); ?></th>
+      		<th  colspan="7"></th>
+    	</tr>
+  	</tfoot>
+</table>
+<?php } else { ?>
+	<p>No hay registros</p>
+<?php } ?>
+						</div>
+		        	</div>
+		        </div>
+				
+				<div class="row-fluid">
+					<div class="span12" id="datos-factura">
+						<table class="table table-bordered">
+								<?php echo $this->tableBody; ?>
+							</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> <!-- End Container -->
+<script type="text/javascript" >
+$(".grid-title").html("Detalle de comprobantes fiscales");
+</script>
+<!-- 
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/js/gastos/comprobacion-pantallacomproba.js"></script>
+ -->

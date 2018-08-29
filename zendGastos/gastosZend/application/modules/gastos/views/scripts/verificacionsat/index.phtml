@@ -1,0 +1,57 @@
+<style>
+    .grid-title {
+        display: none;
+    }
+    .navbar {
+        display: none;
+    }
+    .loading {
+
+    }
+</style>
+<link href="<?php echo $this->baseUrl; ?>/css/main.min.css" rel="stylesheet" media="screen">
+<link href="<?php echo $this->baseUrl; ?>/css/archivo.min.css" rel="stylesheet" media="screen">
+<link href="<?php echo $this->baseUrl; ?>/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="<?php echo $this->baseUrl; ?>/css/table.css" rel="stylesheet" media="screen">
+<link href="<?php echo $this->baseUrl; ?>/lib/uploadify/uploadify.css"rel="stylesheet" type="text/css" />
+
+<div style="position: relative;">
+    <div style="margin: auto">
+        <form class="form-search " id="frmBuscarGasto" name="frmBuscarGasto" >
+            <div style="margin-left: 40%; right: 0; bottom: 0;">
+                <div class="" style="">
+                        <input type="file" name="file_upload" id="file_upload" />
+                    <input type="hidden" name="archivoCargado" id="archivoCargado" value="" />
+                    <input style="padding: 10px;" type="hidden" id="solicitudid" value="<?= $this->solicitudid?>">
+                </div>
+                <div id="msjErrorUploadError" class="alert alert-error" style="display:none;">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    Error al subir archivo
+                </div>
+                <div id="msjErrorUploadSuccess" class="alert alert-success" style="display:none;">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    El archivo archivo.csv se cargó correctamente!
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<!--<button type="button" id="btnCargaComprobante" class="btn btn-primary">Cargar comprobante</button>
+
+</div>
+<!-- MODAL GASTO LIST START z-index: -1;  / height display: none -->
+
+
+<!--<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">-->
+<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+<script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/js/catalogos/layout.js"></script>
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/js/catalogos/menu.js"></script>
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/lib/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="<?php echo $this->baseUrl; ?>/js/gastos/verificacion-sat.js"></script>

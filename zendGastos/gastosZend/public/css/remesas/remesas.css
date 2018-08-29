@@ -1,0 +1,98 @@
+.remesasBox{
+    min-width: 130%;
+    text-shadow: 1px 1px 5px #0000008a;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    box-shadow: 1px 1px 4px #0000008a;
+}
+.remesasBox span{
+    font-weight: 100;
+    padding-left: 5px;
+}
+
+.label-success {
+    background-color: rgb(70,136,71,0.7);
+}
+
+.label-warning {
+    /*background-color: #d9534f;*/
+    background-color: rgb(248,148,6,0.7);
+}
+
+.label-danger {
+    /*background-color: #d9534f;*/
+    background-color: rgb(217,83,79,0.7);
+}
+
+#disponibleSpan{
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.float-left{
+    float: left;
+    margin-right: 5px;
+}
+
+.text-center{
+    text-align: center!important;
+}
+.checkToSave{
+    margin-top: -1px;
+}
+
+.checkbox label{
+    font-size: .97em;
+}
+
+.table tr th input[type=checkbox]{
+    margin-top: -2px!important;
+}
+
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.toMuchText {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.modal-header .close {
+    opacity: .8;
+    color: #000!important;
+}
+
+.parpadea {
+
+    animation-name: parpadeo;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+
+    -webkit-animation-name:parpadeo;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+}
+
+@-moz-keyframes parpadeo{
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes parpadeo {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@keyframes parpadeo {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}

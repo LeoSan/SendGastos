@@ -1,0 +1,267 @@
+<!-- Modal Alta Individual ----- 2 -->
+<div id="modalAltaIndividual" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalAltaIndividualLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalAltaIndividualLabel"><i class="icon-list-alt" style="margin-top: 2px;"></i> Alta individual Crédito</h3>
+  </div>
+  <div class="modal-body">
+  	<form id="frmAltaIndividual" name="frmAltaIndividual" class="form-horizontal">
+	  <div class="control-group" style="margin-bottom: 5px;" >
+	    <label class="control-label" for="concepto">Concepto</label>
+	    <div class="controls">
+	      <select id="concepto" name="concepto" >
+	      	<option value="">-Seleccione-</option>
+	      </select>
+	    </div>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="credito">Crédito</label>
+	    <div class="controls">
+	      <input type="text" id="credito" name="credito" placeholder="Crédito">
+	    </div>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="importe">Importe</label>
+	    <div class="controls">
+	      <input type="text" id="importe" name="importe" placeholder="Importe">
+	    </div>
+	  </div>
+	</form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button id="btnGuardarAltaIndividual" class="btn btn-primary">Guardar cambios</button>
+  </div>
+</div>
+<!-- End Modal Alta Individual -->
+<!-- Modal Captura Cartera ----- 4 -->
+<div id="modalCapturaCartera" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalCapturaCarteraLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalCapturaCarteraLabel"><i class="icon-list-alt" style="margin-top: 2px;"></i> Captura de la Cartera</h3>
+  </div>
+  <div class="modal-body">
+  	<form id="frmCapturaCartera" name="frmCapturaCartera" class="form-horizontal">
+	  <div class="control-group" style="margin-bottom: 10px;border-bottom: 1px solid #949191;" >
+	    <label class="control-label" for="conceptoCar">Concepto</label>
+	    <div class="controls" style="padding-bottom: 5px;">
+	      <select id="conceptoCar" name="conceptoCar" >
+	      	<option value="">-Seleccione-</option>
+	      </select>
+	    </div>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;" >
+	    <label class="control-label" for="catcentrocostoCar">Categoria Centro costo</label>
+	    <div class="controls">
+	      <select id="catcentrocostoCar" name="catcentrocostoCar" >
+	      	<option value="">-Seleccione-</option>
+	      </select>
+	    </div>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 10px;border-bottom: 1px solid #949191;" >
+	    <label class="control-label" for="centrocostoCar">Centro costo</label>
+	    <div class="controls" style="padding-bottom: 5px;">
+	      <select id="centrocostoCar" name="centrocostoCar" >
+	      	<option value="">-Seleccione-</option>
+	      </select>
+	    </div>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;" >
+	    <label class="control-label" for="carteraCar">Cartera</label>
+	    <div class="controls">
+	      <select id="carteraCar" name="carteraCar" >
+	      	<option value="">-Seleccione-</option>
+	      </select>
+	    </div>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="importeCar">Importe</label>
+	    <div class="controls">
+	      <input type="text" id="importeCar" name="importeCar" placeholder="Importe">
+	    </div>
+	  </div>
+	</form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button id="btnGuardarCapturaCartera" class="btn btn-primary">Guardar cambios</button>
+  </div>
+</div>
+<!-- End Modal Captura Cartera -->
+<!-- Modal Captura Importe General ----- 42 -->
+<div id="modalCapturaImporte" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalCapturaImporteLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalCapturaImporteLabel"><i class="icon-list-alt" style="margin-top: 2px;"></i> Captura del Importe</h3>
+  </div>
+  <div class="modal-body">
+  	<form id="frmCapturaImporte" name="frmCapturaImporte" class="form-horizontal">
+	  <div class="control-group" style="margin-bottom: 10px;border-bottom: 1px solid #949191;" >
+	    <label class="control-label" for="conceptoImp">Concepto</label>
+	    <div class="controls" style="padding-bottom: 5px;">
+	      <select id="conceptoImp" name="conceptoImp" >
+	      	<option value="">-Seleccione-</option>
+	      </select>
+	    </div>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;" >
+	    <label class="control-label" for="catcentrocostoImp">Categoria Centro costo</label>
+	    <div class="controls">
+	      <select id="catcentrocostoImp" name="catcentrocostoImp" >
+	      	<option value="">-Seleccione-</option>
+	      </select>
+	    </div>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 10px;border-bottom: 1px solid #949191;" >
+	    <label class="control-label" for="centrocostoImp">Centro costo</label>
+	    <div class="controls" style="padding-bottom: 5px;">
+	      <select id="centrocostoImp" name="centrocostoImp" >
+	      	<option value="">-Seleccione-</option>
+	      </select>
+	    </div>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="importeImp">Importe</label>
+	    <div class="controls">
+	      <input type="text" id="importeImp" name="importeImp" placeholder="Importe">
+	    </div>
+	  </div>
+	</form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button id="btnGuardarCapturaImporteGral" class="btn btn-primary">Guardar cambios</button>
+  </div>
+</div>
+<!-- End Modal Captura Importe General -->
+<!-- Modal Alta Masiva Créditos ----- 3 -->
+<div id="modalAltaMasiva" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalAltaMasivaLabel" aria-hidden="true" style="left: 45%; width: 700px;top: 2%;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalAltaMasivaLabel"><i class="icon-list-alt" ></i> Alta Masiva de Créditos</h3>
+  	<div class="loading-search" style="display:none;position: absolute;right: 1px;width: 200px;top: 21px;"><img alt="Cargando..." src="<?php echo $this->baseUrl; ?>/images/loading.gif" width="600px" height="390px" ></div>
+  </div>
+  <div class="modal-body">
+  	<form id="frmAltaMasiva" name="frmAltaMasiva" class="form-horizontal">
+	  <div class="control-group" style="margin-bottom: 5px;" >
+	    <label class="control-label" for="conceptoAltMas">Concepto</label>
+	    <div class="controls">
+	      <select id="conceptoAltMas" name="conceptoAltMas" >
+	      	<option value="">-Seleccione-</option>
+	      </select>
+	    </div>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="file_upload" style="width: 115px;">1) Carga archivo</label>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;padding-left: 167px;">
+	  	    <input type="file" name="file_upload" id="file_upload" />
+	  	    <input type="hidden" name="archivo" id="archivo" value="" />
+	  	    <input type="hidden" name="verificado" id="verificado" value="N" />
+	  	    <input type="hidden" name="procesado" id="procesado" value="N" />
+	  </div>
+	   <div id="msjErrorUploadError" class="alert alert-error" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		Error al subir archivo
+	  </div>
+	  <div id="msjErrorUploadSuccess" class="alert alert-success" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		Error al subir archivo
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;padding-left: 75px;">
+	    <label>NOTA: Instrucciones de la carga de archivo.</label>
+	    <span class="help-block">El archivo debe ser CSV delimitado por COMAS. Sólo debe tener credito e importe.</span>
+	    <span class="help-block">El nombre del archivo NO debe tener caracteres especiales, Ñ, ñ, epacios.</span>
+	    <span class="help-block">El tamaño del nommbre del archivo NO debe revasar los 15 caracteres.</span>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="importe">2) Validación de archivo</label>
+	    <div class="controls">
+	      <button id="verificacionAltMas" name="verificacionAltMas" class="btn btn-primary" type="button">Verificación</button>
+	    </div>
+	  </div>
+	  <div id="msjErrorValidaError" class="alert alert-error" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		Error al subir archivo
+	  </div>
+	  <div id="msjErrorValidaSuccess" class="alert alert-success" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		Error al subir archivo
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;padding-left: 75px;">
+	    <label>NOTA: Resultado de la Verificación.</label>
+	    <span class="help-block">Error Sí la información es incorrecta en formato.</span>
+	    <span class="help-block">Error Sí los valores de los conceptos son erroneos.</span>
+	    <span class="help-block">Error Sí un Crédito es INVALIDO.</span>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="importe" style="width: 175px;">3) Procesando los créditos</label>
+	    <div class="controls">
+	      <button id="procesamientoAltMas" name="procesamientoAltMas" class="btn btn-primary" type="button">Procesamiento</button>
+	    </div>
+	  </div>
+	  <div id="msjErrorProcesaError" class="alert alert-error" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		Error al subir archivo
+	  </div>
+	  <div id="msjErrorProcesaSuccess" class="alert alert-success" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		Error al subir archivo
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;padding-left: 75px;">
+	    <span class="help-block">Status:</span>
+	    <span class="help-block">Total registros:</span>
+	    <span class="help-block">Correctos:</span>
+	    <span class="help-block">Incorrectos:</span>
+	  </div>
+	</form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button id="btnFinalizarAltaMasiva" name="btnFinalizarAltaMasiva" class="btn btn-primary">Finalizar</button>
+  </div>
+</div>
+<!-- End Modal Alta Masiva Créditos -->
+<div class="content-asignacion" id="catalogo-content">
+	<div class="row-fluid">
+		<div class="span6">
+			<label for="tipoAsignacion">Tipo de asignación&nbsp;&nbsp;
+				<select id="tipoAsignacion" name="tipoAsignacion">
+					<option value="0">-Seleccione-</option>
+					<?php foreach ($this->movimientos as $item): ?>
+					<option <?php echo ($item['IDTIPO'] == $this->tipoAsigActual)?"selected":"" ?> value="<?php echo $item['IDTIPO']; ?>"><?php echo $item['NMTIPO']; ?></option>
+					<?php endforeach; ?>
+				</select>
+				<input type="hidden" id="solicitudid" name="solicitudid" value="<?php echo $this->solicitudid; ?>" >
+				<input type="hidden" id="empleadoid" name="empleadoid" value="<?php echo $this->empleadoid; ?>" >
+			</label>
+		</div>
+		<div class="span6" style="padding-left: 480px;">
+			<button class="btn btn-success" id="bntAgregarAsignacion" name="bntAgregarAsignacion">Agregar</button>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12" id="lista-asignaciones">
+			<table class="table table-bordered">
+				<thead>
+			    	<tr>
+			      		<th>Categoria/Subcategoria</th>
+			      		<th>Concepto</th>
+			      		<th>Crédito/Cartera/Concepto</th>
+			      		<th style="text-align:center;">Importe</th>
+			      		<th>Acciones</th>
+			    	</tr>
+			  	</thead>
+			  	<tbody>
+<!--			    	<tr>-->
+<!--			      		<td>Cat->GASTOS ADMINISTRACIÓN<BR>Subcat->ALMACENAMIENTO Y DIGITALIZACIÓN</td>-->
+<!--			      		<td>CONCEPTODIGITALIZACIÓN DE EXPEDIENTES</td>-->
+<!--			      		<td>000000000000001<BR>JUAN JOSÉ LÓPEZ TORRES</td>-->
+<!--			      		<td style="text-align:right;" >$85,254.00</td>-->
+<!--			      		<td><a href="#" >X1</a><a href="#">X5</a><i class="icon-remove " style="margin-top: 9px;"></td>-->
+<!--			    	</tr>-->
+			  	</tbody>
+			</table>
+		</div>
+	</div>
+</div>

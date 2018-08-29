@@ -1,0 +1,33 @@
+<?php if( count($this->creditos) > 0 ) { ?>
+<table class="table table-bordered">
+	<thead>
+    	<tr>
+			<!-- <th>Categoria/Subcategoria</th>-->
+      		<th>Concepto</th>
+      		<th>Cuentas</th>
+      		<th style="text-align:center;">Importe</th>
+      		<th>Descripción</th>
+    	</tr>
+  	</thead>
+  	<tbody>
+  		<?php $total = 0;  foreach($this->creditos as $item): ?>
+    	<tr>
+      		<!-- td><?php //echo $item['CATEGSUB'];?></td>-->
+      		<td><?php echo $item['NMCONCEPTO'];?></td>
+      		<td><?php echo $item['CREDITO'];?></td>
+      		<td style="text-align:right;padding-top: 14PX;" ><?php echo $item['IMPORTECOMAS'];?></td>
+      		<td><?php echo $item['DESCRIPCION'];?></td>
+    	</tr>
+    	<?php $total += (float)$item['IMPORTE']; endforeach; ?>
+  	</tbody>
+  	<tfoot>
+  		<tr>
+  			<th colspan="2" style="text-align:right;">Total</th>
+      		<th style="text-align:right;"><?php echo "$ " .  number_format($total, 2, ".", ","); ?></th>
+      		<th></th>
+    	</tr>
+  	</tfoot>
+</table>
+<?php } else { ?>
+	<p>No hay registros</p>
+<?php } ?>

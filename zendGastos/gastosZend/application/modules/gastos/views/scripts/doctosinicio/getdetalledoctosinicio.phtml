@@ -1,0 +1,71 @@
+﻿<?php if( count($this->documentosinicio) > 0 ) { ?>
+<table class="table table-bordered">
+	<thead>
+    	<tr>
+      		<th>Categoría/Subcategoría</th>
+      		<th>Concepto</th>
+      		<th><?php echo $this->tipocapturaLabel;?></th>
+      		<th>Documentos</th>
+      		<th style="width: 130px;">Acciones</th>
+    	</tr>
+  	</thead>
+  	<tbody>
+  		<?php foreach($this->documentosinicio as $item): ?>
+    	<tr>
+      		<td><?php echo $item['CATEGSUB'];?></td>
+      		<td><?php echo utf8_encode($item['NMCONCEPTO']);?></td>
+      		<td><?php echo $item['CREDITO'];?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $item['CENTROCOSTOS'];?><br><?php echo utf8_encode($item['DEUDOR']);?></td>
+      		<td><ul>
+      			<?php $archivos = explode("|", $item['NMARCHIVOSINI']);
+      			for ($i=0; $i<=count($archivos) - 2;$i++){
+      				//echo $archivos[$i] . "<br>";
+      				$arrayNombre = explode("@", $archivos[$i]);
+      				$requerido = $arrayNombre[3];
+      				echo ($requerido == 'R'?'<li><b style="color:red;">[R]</b>&nbsp;':'<li>') . trim($arrayNombre[0]) . "</li>";
+      			}
+      			?>
+      			</ul>
+      		</td>
+      		<td><ul>
+      			<?php $archivosAcc = explode("|", $item['NMARCHIVOSINI']);
+      			for ($i=0; $i<=count($archivosAcc) - 2;$i++){
+      				$arrayNombre = explode("@", $archivosAcc[$i]);
+      				//var_dump($arrayNombre);exit;
+      				$nombreA = $arrayNombre[0];
+      				$consecutivoA = $arrayNombre[1];
+      				$rutaArchivo = $arrayNombre[2];
+      				$requerido = $arrayNombre[3];
+      				//$rutaArchivo = $item['RUTAARCHIVO'];
+      				?>
+      				<li>
+      				<?php
+      				if($rutaArchivo != "#"){
+      				//$rutaArchivo = "http://192.168.100.116/" . substr($rutaArchivo, 38);
+      				?>
+      					<a href="<?php echo $rutaArchivo; ?>" file="<?php echo $nombreA; ?>" target="_blank" class="ver"><i class="icon-eye-open"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+      					<?php
+      				}
+      				?>
+      				<a href="#" credito="<?php echo $item['CREDITO'];?>" consecutivo="<?php echo $consecutivoA;?>" nmdocumento="<?php echo $nombreA;?>" class="lw" >LW</a>&nbsp;&nbsp;&nbsp;&nbsp;
+      				<a href="#" credito="<?php echo $item['CREDITO'];?>" consecutivo="<?php echo $consecutivoA;?>" concepto="<?php echo $item['IDCONCEPTO'];?>" nmdocumento="<?php echo $nombreA;?>" indice="<?php echo $i + 1;?>" class="agregar">AGREGAR</a><br>
+      				</li><?php
+      			}
+      			 ?>
+      			 </ul>
+      		</td>
+    	</tr>
+    	<?php endforeach; ?>
+  	</tbody>
+<!--  	<tfoot>-->
+<!--  		<tr>-->
+<!--  			<th style="text-align:right;">Total comprobado</th>-->
+<!--      		<th style="text-align:right;"></th>-->
+<!--      		<th style="text-align:right;" id="totalImporteReal" ></th>-->
+<!--      		<th></th>-->
+<!--      		<th></th>-->
+<!--    	</tr>-->
+<!--  	</tfoot>-->
+</table>
+<?php } else { ?>
+	<p>No hay registros</p>
+<?php } ?>

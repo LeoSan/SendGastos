@@ -1,0 +1,515 @@
+<style>
+.ui-jqgrid tr.jqgrow { cursor: pointer; }
+.modal.fade.in#modalDetail { top: 9%; }
+.modal#modalDetail { width: 95%; left: 25%; }
+.modal-header .close { color: #000; }
+.container { margin: 0 18px 10px 2px!important; }
+ul.typeahead.dropdown-menu { font-size: 10px; }
+ul.typeahead.dropdown-menu a { line-height: 10px; }
+.txtlabel { font-size: 12px; text-align: left; }
+input[type="text"] { font-size: 12px; }
+.ui-jqgrid tr.jqgrow td { white-space: initial!important; }
+</style>
+<div class="container">
+ 	<a class="btn" title="Buscar" id="btnSearch" href="#"><i class="icon-search"></i></a>
+<!-- 	
+	<a class="btn" title="Mi score" id="btnScore" href="#"><i class="icon-star"></i></a>  
+-->
+
+<?php if( isset($this->infoUser[0]) ) {  ?>
+	<input type="hidden" id="quasarid" value="<?=$this->infoUser[0]['CLIDNUM']?>">
+<?php } else { ?>
+	<input type="hidden" id="quasarid" value="0">
+<?php } ?>
+
+	<input type="hidden" id="usrid" value="<?=$this->usr?>">
+	<div class="modal fade" id="modalBusqueda" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="display:none">
+		<div class="modal-dialog modal-lg" role="document">
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        			<h4 class="modal-title" id="detailModalLabel">B&uacute;squeda avanzada</h4>
+      			</div>
+		      	<div class="modal-body">
+    	    		<form class="formGasto" id="frmBuscarConsultaGralByParameters">
+        				<label class="check">
+            	     		<div class="span4 txtlabel">N&uacute;mero de caso</div>
+                	    	<div class="span5"><input type="text" id="numGasto" name="numGasto" class="input-xlarge" placeholder="Caso"></div>
+            	 		</label>
+	            		<label class="">
+    	            		<div class="span4 txtlabel">Nombre de usuario&nbsp;&nbsp;</div>
+        	               	<div class="span5"> <input type="text" autocomplete="off" id="idUserSearchAdmin" name="nmuser" class="input-xlarge typeahead" maxlength="25" placeholder="Usuario"> </div>
+            	           	<input type="hidden" name="mailsearch" id="mailsearch" value="">
+            			</label>
+            			<label class="">
+    	            		<div class="span4 txtlabel">Proveedor de gasto&nbsp;&nbsp;</div>
+        	               	<div class="span5"> <input type="text" autocomplete="off" id="idProveedor" name="nmproveedor" class="input-xlarge typeahead" maxlength="25" placeholder="Proveedor"> </div>
+            	           	<input type="hidden" name="nmproveedorid" id="nmproveedorid" value="">
+            			</label>
+            			<label class="">
+                			<div class="span4 txtlabel">N&uacute;mero de cuenta</div>
+                        	<div class="span5"><input type="text" id="numCredit" name="numCredit" class="input-xlarge" placeholder="Cuenta"></div>
+	            		</label> 
+	            		<label class="">
+                			<div class="span4 txtlabel">Autorizador</div>
+                        	<div class="span5"><input type="text" autocomplete="off" id="lblautorizador" name="autorizador" class="input-xlarge" placeholder="Autorizador"></div>
+                        	<input type="hidden" name="mailsearchaut" id="mailsearchaut" value="">
+	            		</label>
+    	    		</form>
+      			</div>
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        			<button type="button" id="btnBuscarConsultaGralByParameters" class="btn btn-primary">Buscar</button>
+        		</div>
+	      	</div>
+    	</div>
+	</div>
+
+	<div class="modal fade" id="modalLoading" tabindex="-1" style="display:none">
+		<div class="modal-dialog modal-lg">
+    		<div class="modal-content">
+      	  		<div class="modal-body text-center">
+					<img src="http://quantum2.pendulum.com.mx/gastosfact/public/images/loading-gears.gif">
+      			</div>
+      		</div>
+    	</div>
+	</div>
+
+	<div class="modal fade" id="modalDetail" tabindex="-1" style="display:none">
+		<div class="modal-dialog modal-lg">
+    		<div class="modal-content">
+      	  		<div class="modal-body">
+      	  			<div class="text-center">
+					<img class="loading-ajax" style="display: none;" src="http://quantum2.pendulum.com.mx/gastosfact/public/images/loading-gears.gif">
+					</div>
+					<div class="modal_detalle">
+					</div>
+      			</div>
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        		</div>
+      		</div>
+    	</div>
+	</div>
+	
+	<div class="modal fade" id="modalScore" tabindex="-1" style="display:none">
+		<div class="modal-dialog modal-lg">
+    		<div class="modal-content">
+      	  		<div class="modal-body">
+      	  		<div class="text-center">
+					<img class="loading-ajax" src="http://quantum2.pendulum.com.mx/gastosfact/public/images/loading-gears.gif">
+					</div>
+					<div class="modal_score" style="display: none;" >
+						<label class="check">
+            	     		<div class="span4 txtlabel">Pendiente</div>
+                	    	<div id="fnpendiente" class="span5"></div>
+            	 		</label>
+            	 		<label class="check">
+            	     		<div class="span4 txtlabel">Vencido</div>
+                	    	<div id="fnvencido" class="span5"></div>
+            	 		</label>
+            	 		<label class="check">
+            	     		<div class="span4 txtlabel">Tope</div>
+                	    	<div id="fntope" class="span5"></div>
+            	 		</label>
+            	 		<label class="check">
+            	     		<div class="span4 txtlabel">Queda</div>
+                	    	<div id="fnqueda" class="span5"></div>
+            	 		</label>
+            	 		<table id="tableScore" class="table table-hover"></table>
+					</div>
+      			</div>
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        		</div>
+      		</div>
+    	</div>
+	</div>
+
+	<div class="span12 tablehide">
+        <table id="tableCasos" class="table table-hover"></table>
+        <div id="jqGridPager"></div>
+	</div>
+
+	<div class="span12 tablehide2" style="visibility: hidden;"">
+        <table id="tableCasosAutorizador" class="table table-hover"></table>
+        <div id="jqGridPagerAut"></div>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+    $(function(){
+ 		$('.grid-title.text-right').text('');
+/*
+ 		document.onkeypress = function (event) {
+ 	        event = (event || window.event);
+ 	        if (event.keyCode == 123) {
+ 	            return false;
+ 	        }
+ 	    }
+ 	    document.onmousedown = function (event) {
+ 	        event = (event || window.event);
+ 	        if (event.keyCode == 123) {
+ 	            return false;
+ 	        }
+ 	    }
+ 		document.onkeydown = function (event) {
+ 	        event = (event || window.event);
+ 	        if (event.keyCode == 123) {
+ 	            return false;
+ 	        }
+ 	    }
+
+ 		//Disable right click script 
+ 		var message="Sorry, right-click has been disabled"; 
+ 		function clickIE() {if (document.all) {(message);return false;}} 
+ 		function clickNS(e) {
+ 	 		if (document.layers||(document.getElementById&&!document.all)) { 
+ 		 		if (e.which==2||e.which==3) {(message);return false;}}} 
+ 				if (document.layers) 
+ 				{document.captureEvents(Event.MOUSEDOWN);document.onmousedown=clickNS;} 
+ 			else{document.onmouseup=clickNS;document.oncontextmenu=clickIE;} 
+ 			document.oncontextmenu=new Function("return false") 
+*/
+        var jsondata = '<?=$this->casos?>';
+        jsondata = $.parseJSON(jsondata);
+        var baseUrl= '<?=$this->baseUrl?>';
+
+        $("#btnSearch").click(function(e){
+            e.preventDefault();
+            $("#modalBusqueda").modal('show');
+        });
+
+        var theight = ( $('#catalogo-content .container').height() * 5 );
+
+        $("#tableCasos").jqGrid({
+            datatype: "local",
+            data: jsondata,
+            rowNum: jsondata.length,
+            colNames:[
+                'Sistema',
+                'Caso', 
+                'Cuenta',
+                'Concepto',
+                'Fecha de registro',
+                'Solicitante',
+                'Fecha inicio',
+                'Fecha fin',
+                'Estado',
+                'Tipo de movimiento'
+            ],
+            colModel: [
+                { index: 'TIPO',          name: 'TIPO',          width: 60, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'CASO',          name: 'CASO',          width: 30, searchoptions: { sopt: ["cn","eq"] }, align: "right", sorttype: "number" },
+                { index: 'CREDITO',       name: 'CREDITO',       width: 70, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'CONCEPTO',      name: 'CONCEPTO',      searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'FDFECREGISTRO', name: 'FDFECREGISTRO', width: 60, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'NMSOLICITANTE', name: 'NMSOLICITANTE', searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'FDFECINI',      name: 'FDFECINI',      width: 60, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'FDFECFIN',      name: 'FDFECFIN',      width: 60, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'FCSTATUSLABEL', name: 'FCSTATUSLABEL', width: 60, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'TIPOMOVLABEL',  name: 'TIPOMOVLABEL',  width: 70, searchoptions: { sopt: ["cn","eq"] } }
+            ],
+            ondblClickRow: function(rowId) {
+            	var rowData = $(this).getRowData(rowId);
+
+            	$(".modal_detalle").html('');
+            	$("#modalDetail").modal('show');
+				$(".modal-body .loading-ajax").show();
+
+				if( rowData['TIPO'] == 'GASTO' ){
+					var urlDetalle = baseUrl + '/gastos/detalle/index/gastoid/'+rowData['CASO']+'/iduser/'+$("#quasarid").val();
+				} else {
+					var urlDetalle = baseUrl + '/planesdeviaje/consulta/getdetalleplanviaje/cc/1/caso/'+rowData['CASO'];
+				}
+
+				var datahtml = "<iframe style='width: 100%;height: 320px;border:none;' src='"+urlDetalle+"'></iframe>"; 
+				$(".modal_detalle").hide().html(datahtml);
+
+				setTimeout( function(){
+					$(".modal-body .loading-ajax").hide('slow');
+					$(".modal_detalle").show();
+				}, 2000 );
+            },
+            viewrecords: true,
+            autowidth: true,
+            shrinkToFit: true,
+            height: theight,
+            ignoreCase: true,
+			loadonce: true,
+            sortname: 'CASO', 
+            sortorder: 'desc'
+        });
+
+        $("#tableCasos").jqGrid('filterToolbar', { searchOnEnter: false, stringResult: true });
+        
+        $("#tableCasosAutorizador").jqGrid({ 
+            datatype: "local",
+            data: jsondata,
+            rowNum: jsondata.length,
+            colNames:[
+                'Sistema',
+                'Caso', 
+                'Cuenta',
+                'Concepto',
+                'Fecha de registro',
+                'Solicitante',
+                'Tipo de autorizaci&oacute;n',
+                'Resultado',
+                'Comentario',
+                'Estado'
+            ],
+            colModel: [
+                { index: 'TIPO',          name: 'TIPO',          width: 60, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'CASO',          name: 'CASO',          width: 30, searchoptions: { sopt: ["cn","eq"] }, align: "right", sorttype: "number" },
+                { index: 'CREDITO',       name: 'CREDITO',       width: 70, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'CONCEPTO',      name: 'CONCEPTO',      searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'FDFECREGISTRO', name: 'FDFECREGISTRO', width: 60, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'NMSOLICITANTE', name: 'NMSOLICITANTE', searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'IDTIPOAUTORIZA',  name: 'IDTIPOAUTORIZA',  width: 70, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'FCRESULTADO',      name: 'FCRESULTADO',      width: 60, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'FCCOMENTARIOS',      name: 'FCCOMENTARIOS',      width: 60, searchoptions: { sopt: ["cn","eq"] } },
+                { index: 'FCSTATUSLABEL', name: 'FCSTATUSLABEL', width: 60, searchoptions: { sopt: ["cn","eq"] } }
+            ],
+            ondblClickRow: function(rowId) {
+            	var rowData = $(this).getRowData(rowId);
+
+            	$(".modal_detalle").html('');
+            	$("#modalDetail").modal('show');
+				$(".modal-body .loading-ajax").show();
+
+				if( rowData['TIPO'] == 'GASTO' ){
+					var urlDetalle = baseUrl + '/gastos/detalle/index/gastoid/'+rowData['CASO']+'/iduser/'+$("#quasarid").val();
+				} else {
+					var urlDetalle = baseUrl + '/planesdeviaje/consulta/getdetalleplanviaje/cc/1/caso/'+rowData['CASO'];
+				}
+
+				var datahtml = "<iframe style='width: 100%;height: 320px;border:none;' src='"+urlDetalle+"'></iframe>"; 
+				$(".modal_detalle").hide().html(datahtml);
+
+				setTimeout( function(){
+					$(".modal-body .loading-ajax").hide('slow');
+					$(".modal_detalle").show();
+				}, 2000 );
+            },
+            viewrecords: true,
+            autowidth: true,
+            shrinkToFit: true,
+            height: theight,
+            ignoreCase: true,
+			loadonce: true,
+            sortname: 'CASO', 
+            rowNum: 2000,
+            pager: "#jqGridPager",
+            sortorder: 'desc'
+        });
+
+        $("#tableCasosAutorizador").jqGrid('filterToolbar', { searchOnEnter: false, stringResult: true });
+        
+        var url = baseUrl + '/planesdeviaje/consulta/get-user-quantum/';
+        
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: '',
+            dataType: 'html',
+            success: function(data) {
+                    data = jQuery.parseJSON(data);
+
+                    globalArrIndex = [];
+                    arrdata = [];
+                    counter = 0;
+                    $.each(data, function( index, value ) {
+                            if(value.NOMBRE != null && value.NOMBRE != ''){
+                                    arrdata[counter] = value.NOMBRE;
+                                    globalArrIndex[value.NOMBRE] = value.IDU;
+                                    counter ++;
+                            }
+                    });
+                    var typeahead = $('#idUserSearchAdmin').data('typeahead');
+                    if (typeahead) { 
+                        typeahead.source = arrdata;
+                    } else {
+                        $('#idUserSearchAdmin').typeahead({
+                      	  source: arrdata,
+                      	  minLength: 2,
+                      	  updater: function(item){
+                      		  $("#mailsearch").val( globalArrIndex[item] );
+                      		  return item;
+                      	  }
+                        });
+             		}
+
+                    globalArrIndexA = [];
+                    arrdataA = [];
+                    counterA = 0;
+                    $.each(data, function( index, value ) {
+                            if(value.NOMBRE != null && value.NOMBRE != ''){
+                            	arrdataA[counterA] = value.NOMBRE;
+                                globalArrIndexA[value.NOMBRE] = value.IDU;
+                                counterA ++;
+                            }
+                    });
+
+                    var typeaheadA = $('#lblautorizador').data('typeahead');
+                    if (typeaheadA) { 
+                        typeaheadA.source = arrdataA;
+                    } else {
+                        $('#lblautorizador').typeahead({
+                      	  source: arrdataA,
+                      	  minLength: 2,
+                      	  updater: function(item){
+                      		  $("#mailsearchaut").val( globalArrIndexA[item] );
+                      		  return item;
+                      	  }
+                        });
+             		}
+             		
+            }
+  		}); // fin en buscar usuario
+
+
+        $.ajax({
+            url: baseUrl + '/gastos/detalle/getallprovee',
+            type: 'POST',
+            data: '',
+            dataType: 'html',
+            success: function(data) {
+                    data2 = jQuery.parseJSON(data);
+                    globalArrIndex2 = [];
+                    arrdata2 = [];
+                    counter2 = 0;
+                    $.each(data2, function( index, value ) {
+                            if(value.NOMBRE != null && value.NOMBRE != ''){
+                                    arrdata2[counter2] = value.NOMBRE;
+                                    globalArrIndex2[value.NOMBRE] = value.IDU;
+                                    counter2 ++;
+                            }
+                    });
+
+                    var typeahead2 = $('#idProveedor').data('typeahead');
+                    if (typeahead2) { 
+                        typeahead.source = arrdata2;
+                    } else {
+                        $('#idProveedor').typeahead({
+                      	  source: arrdata2,
+                      	  minLength: 1,
+                      	  updater: function(item){
+                      		  $("#nmproveedorid").val( globalArrIndex2[item] );
+                      		  return item;
+                      	  }
+                        });
+             		  }
+            }
+  		}); // fin en buscar usuario
+  		
+  		
+        $("#btnBuscarConsultaGralByParameters").off('click').on('click',function(e){
+            e.preventDefault();
+
+            var gasto = $("#numGasto").val();
+            var users = $("#idUserSearchAdmin").val();
+            var credi = $("#numCredit").val();
+            var prove = $("#nmproveedorid").val();
+            var autor = $("#mailsearchaut").val();
+
+			if( gasto == '' && users == '' && credi == '' && prove == '' && autor == '' ){
+				$("#numGasto").focus();
+				return false;
+			}
+			$("#tableCasos").jqGrid("clearGridData");
+			$("#modalBusqueda").modal('hide');
+			$("#modalLoading").modal("show");
+        	$.ajax({ 
+                url: baseUrl + '/gastos/detalle/search-advance/',
+                type: 'POST',
+                data: $("#frmBuscarConsultaGralByParameters").serialize(),
+                dataType: 'json',
+                success: function(data) {
+                	$("#modalLoading").modal("hide");
+                	if(!data.autorizador) {
+                		$(".tablehide").css('visibility','visible');
+                		$(".tablehide").css('height','initial');
+                    	$(".tablehide2").css('visibility','hidden');
+                    	$(".tablehide2").css('height','0px');
+                    	
+                		$("#tableCasos").jqGrid('setGridParam', {
+            				datatype: 'local',
+            	        	data: data.data,
+            	        	rowNum: data.data.length
+            			}).trigger("reloadGrid");
+                	} else {
+                		$(".tablehide2").css('visibility','visible');
+                		$(".tablehide2").css('height','initial');
+                    	$(".tablehide").css('visibility','hidden');
+                    	$(".tablehide").css('height','0px');
+                    	//console.info( parseInt(data.total[0].TOTAL);
+                		$("#tableCasosAutorizador").jqGrid('setGridParam', {
+            				datatype: 'local',
+            	        	data: data.data,
+            	        	rowNum: parseInt(data.total[0].TOTAL)
+            			}).trigger("reloadGrid");
+                	}
+
+                }
+      		}); // fin en buscar usuario
+      		
+        }); 
+		var scoredata = 0;
+        $("#btnScore").off('click').on('click',function(e){
+            e.preventDefault();
+
+            $("#modalScore").modal("show");
+            $.ajax({ 
+                url: baseUrl + '/gastos/detalle/get-score/',
+                type: 'POST',
+                data: { user: $("#quasarid").val() },
+                dataType: 'json',
+                success: function(data) {
+                	$("#fnvencido").text(data.general.VENCIDO);
+                	$("#fntope").text(data.general.TOPE);
+                	$("#fnpendiente").text(data.general.PENDIENTE);
+                	$("#fnqueda").text(data.general.QUEDA);
+                	$(".loading-ajax").hide("slow");
+                	$(".modal_score").show();
+
+                	if( scoredata == 0 ) {
+                		scoredata = data.detalle;
+                    	/*$("#tableScore").jqGrid({
+                            datatype: "local",
+                            data: scoredata,
+                            rowNum: jsondata.length,
+                            colNames:[
+                                'Sistema',
+                                'Caso', 
+                                'Concepto',
+                                'Fecha de registro',
+                                'Solicitante',
+                                'Fecha inicio',
+                                'Fecha fin',
+                                'Estado',
+                                'Tipo de movimiento'
+                            ],
+                            colModel: [
+                                { index: 'TIPO',          name: 'TIPO',          width: 50, searchoptions: { sopt: ["cn","eq"] } },
+                                { index: 'CASO',          name: 'CASO',          width: 30, searchoptions: { sopt: ["cn","eq"] } },
+                                { index: 'CONCEPTO',      name: 'CONCEPTO',      searchoptions: { sopt: ["cn","eq"] } },
+                                { index: 'FDFECREGISTRO', name: 'FDFECREGISTRO', sorttype:'date', formatter:'date', formatoptions: {newformat:'d-M-y'}, width: 50, searchoptions: { sopt: ["cn","eq"] } },
+                                { index: 'NMSOLICITANTE', name: 'NMSOLICITANTE', searchoptions: { sopt: ["cn","eq"] } },
+                                { index: 'FDFECINI',      name: 'FDFECINI',      width: 45, searchoptions: { sopt: ["cn","eq"] } },
+                                { index: 'FDFECFIN',      name: 'FDFECFIN',      width: 45  },
+                                { index: 'FCSTATUSLABEL', name: 'FCSTATUSLABEL', width: 40  },
+                                { index: 'TIPOMOVLABEL',  name: 'TIPOMOVLABEL',  width: 60  }
+                            ]
+                    	});*/
+                	} else {
+						
+                    }
+
+                }
+      		});
+
+        }); 
+    });
+</script>

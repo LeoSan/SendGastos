@@ -1,0 +1,239 @@
+﻿<div class="alert hide alert-warning"><button type="button" class="close" data-dismiss="alert">×</button>
+	<strong>¡Monto excedido!</strong><div class="warningMonto"> El monto especificado en la factura excede las politicas. Se definira el monto maximo permitido en el formulario.<strong>Favor de validar los montos y presionar Guardar</strong></div>
+</div>
+<!-- Container -->
+<form id="formfactura" name="formfactura">
+<div class="container-fluid">
+	<div class="panel panel-info">
+		<div class="panel-heading-comproba">
+			<h4>Datos de plan de viaje</h4>
+		</div>
+		<div class="panel-body">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="span6">
+						<div class="col-xs-2 col-xs-offset-2">
+							<label for="tipogastof">Tipo de gasto</label>
+						</div>
+						<div class="col-xs-4">
+							<select id="tipogastof" name="tipogastof" >
+								<option value="0"> -Seleccione- </option>
+								<?php foreach( $this->tipogastof as $item ) { ?> 
+									<option value="<?=$item["IDTPOGASTO"] ?>"> <?=str_replace(array('ion','bus'),array('i&oacute;n','b&uacute;s'),$item["NMGASTO"])?> </option>
+								<?php } ?>
+							</select>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="col-xs-2 col-xs-offset-2">
+							<label for="conceptof">Concepto</label>
+						</div>
+						<div class="col-xs-4">
+							<select id="conceptof" name="conceptof" >
+								<option value="0"> -Seleccione- </option>
+								<?php foreach( $this->conceptof as $item ) { ?> 
+									<option class="tpogto hide tpogto_<?=$item["IDTPOGASTO"] ?>" value="<?=$item["IDTPOGASTO"].'_'.$item["IDCONCEPTO"]?>"> <?=str_replace(array('ion','bus'),array('i&oacute;n','b&uacute;s'),$item["NMCONCEPTO"])?> </option>
+								<?php } ?>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> 
+<!-- End Container -->
+
+<!-- Container -->
+<div class="container-fluid">
+	<div class="panel panel-info">
+		<div class="panel-heading-comproba">
+			<h4>Datos de la factura</h4>
+		</div>
+	    <div class="panel-body">
+	      <div class="container-fluid">
+		<div class="row">
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlFecha">Fecha</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlFecha" name="xmlFecha" placeholder="Fecha" type="text" readonly style="background-color: #ffffff;cursor: pointer;" value="<?php echo $this->fecha; ?>" >
+			          </div>
+	        	</div>
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlConcepto">Concepto en factura</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlConcepto" name="xmlConcepto" placeholder="Concepto" type="text" value="<?php echo $this->concepto; ?>" >
+			          </div>
+	        	</div>
+	        </div>
+	        <div class="row">
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlSubtotal">Subtotal</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlSubtotal" name="xmlSubtotal" placeholder="Subtotal" type="text" readonly value="<?php echo $this->subTotal; ?>" >
+			          </div>
+	        	</div>
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlFolio">Serie/Folio</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlFolio" name="xmlFolio" placeholder="Serie/Folio" type="text" readonly value="<?php echo $this->factura; ?>" >
+			          </div>
+	        	</div>
+	        </div>
+	        <div class="row">
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlIsr">Isr</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlIsr" name="xmlIsr" placeholder="Isr" type="text" readonly value="<?php echo $this->isr; ?>">
+			          </div>
+	        	</div>
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlIvaRetenido">Iva retenido</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlIvaRetenido" name="xmlIvaRetenido" placeholder="Iva Retenido" type="text" readonly value="<?php echo $this->ivaRetenido; ?>">
+			          </div>
+	        	</div>
+	        </div>
+	        <div class="row">
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlIva">Iva</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlIva" name="xmlIva" placeholder="Iva" type="text" readonly value="<?php echo $this->iva; ?>">
+				    <input name="xmlPorcIva" type="hidden" readonly value="<?php echo $this->porciva; ?>">
+			          </div>
+	        	</div>
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlOtrosImpuestos">Otros impuestos</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlOtrosImpuestos" name="xmlOtrosImpuestos" placeholder="Otros impuestos" type="text" readonly value="<?php echo $this->otrosImpuestos; ?>">
+			          </div>
+	        	</div>
+	        </div>
+		<div class="row">
+			<div class="span6">
+				<div class="col-xs-2 col-xs-offset-2">
+					<label for="xmlTotal">Total</label>
+				</div>
+				<div class="col-xs-4">
+					<input class="form-control" id="xmlTotal" name="xmlTotal" placeholder="Total" type="text" readonly value="<?php echo $this->total; ?>">
+				</div>
+			</div>
+			<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+					<label for="xmlTotal">PDF</label>
+				</div>
+				<div class="col-xs-4">
+					<input type="file" name="uploadfile_pdf" id="uploadfacturapdf" />
+					<input type="hidden" name="pdffactura" id="pdffactura" value="" />
+					<input type="hidden" name="oldnamepdffactura" id="oldnamepdffactura" value="" />
+					<input type="hidden" name="newnamepdffactura" id="newnamepdffactura" value="" />
+				</div>
+			</div>
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	</div> <!-- End Container -->
+  	<div class="container-fluid"><!-- Container -->
+	  <div class="panel panel-info">
+	    <div class="panel-heading-comproba">
+	      <h4>Datos del emisor</h4>
+	    </div>
+	    <div class="panel-body">
+	      <div class="container-fluid">
+	        <div class="row">
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlRfcEmisor">RFC</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlRfcEmisor" name="xmlRfcEmisor" placeholder="Rfc Emisor" type="text" readonly value="<?php echo $this->rfcEmisor; ?>">
+			          </div>
+	        	</div>
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlNombreEmisor">Nombre fiscal</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlNombreEmisor" name="xmlNombreEmisor" placeholder="Nombre Fiscal" type="text" value="<?php echo $this->nombreEmisor; ?>">
+			          </div>
+	        	</div>
+	          	<input type="hidden" id="xmlUuid" name="xmlUuid" value="<?php echo $this->uuid; ?>">
+	          	<input type="hidden" id="xmlNombreArchivo" name="xmlNombreArchivo" value="<?php echo $this->nombreArchivo; ?>">
+			<input type="hidden" id="newnamexmlfactura" name="newnamexmlfactura" value="<?php echo $this->newnombrexml; ?>">
+			<input type="hidden" id="oldnamexmlfactura" name="oldnamexmlfactura" value="<?php echo $this->oldnombrexml; ?>">
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div> <!-- End Container -->
+	<div class="container-fluid"><!-- Container -->
+	  <div class="panel panel-info">
+	    <div class="panel-heading-comproba">
+	      <h4>Datos del receptor</h4>
+	    </div>
+	    <div class="panel-body">
+	      <div class="container-fluid">
+	        <div class="row">
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlRfcReceptor">RFC</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlRfcReceptor" name="xmlRfcReceptor" placeholder="Rfc Receptor" type="text" readonly value="<?php echo $this->rfcReceptor; ?>" >
+			          </div>
+	        	</div>
+	        	<div class="span6">
+	        		<div class="col-xs-2 col-xs-offset-2">
+			            <label for="xmlNombreReceptor">Nombre fiscal</label>
+			          </div>
+			          <div class="col-xs-4">
+			            <input class="form-control" id="xmlNombreReceptor" name="xmlNombreReceptor" placeholder="Nombre Fiscal" type="text" readonly value="<?php echo $this->nombreReceptor; ?>">
+			          </div>
+	        	</div>
+	          
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div> <!-- End Container -->
+	<div class="container-fluid"><!-- Container -->
+	  <div class="panel panel-info">
+	    <div class="">
+	      <div class="container-fluid">
+	        <div class="row">
+	        	<input type="hidden"  id="xmlValidacion" name="xmlValidacion" value="<?php echo $this->validacion; ?>" />
+	        	<?php if($this->validacion == "1"){ ?>
+	        	<div class="span12">
+	        		<div class="alert alert-error">
+		              <button type="button" class="close" data-dismiss="alert">×</button>
+		              <?php echo $this->mensaje; ?>
+		              <!-- <strong>Factura repetida!</strong> La factura ya ha sido comprobado en el Gasto 247871.-->
+		            </div>
+	        	</div>
+	        	<?php } ?>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div> <!-- End Container -->
+</form>
+<script>
+	ComprobacionPantalla.initPantallaXML();
+</script>

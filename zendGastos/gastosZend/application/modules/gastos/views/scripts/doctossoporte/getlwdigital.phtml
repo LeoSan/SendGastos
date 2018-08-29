@@ -1,0 +1,29 @@
+﻿<?php if( count($this->documentos) > 0 ) { ?>
+<h4 style="font-size: 1.50em;"><?php echo "Crédito: " .  $this->credito; ?></h4>
+<table id="creditosdocumentoslw" class="table table-bordered">
+	<thead>
+    	<tr>
+      		<th></th>
+<!--      		<th>#</th>-->
+      		<th>Descripción</th>
+      		<th>Fecha alta</th>
+      		<th>Usuario</th>
+      		<th>Ver</th>
+    	</tr>
+  	</thead>
+  	<tbody>
+  		<?php foreach($this->documentos as $item): ?>
+    	<tr>
+      		<td><input type="checkbox" name="op-<?php echo $item['INDICE'];?>" iddocto="<?php echo $item['INDICE'];?>" value="<?php echo $item['VIEWER'];?>" ></td>
+      		<!--<td><?php echo $item['INDICE'];?></td>
+      		--><td><?php echo utf8_encode($item['DESCRIPCION']);?></td>
+      		<td><?php echo $item['FECALTA'];?></td>
+      		<td><?php echo $item['USUARIO'];?></td>
+      		<td><a href="<?php echo $item['VIEWER'];?>" id="<?php echo $item['VIEWER'];?>" target="_blank"><?php echo $item['ARCHIVO'];?></a></td>
+    	</tr>
+    	<?php endforeach; ?>
+  	</tbody>
+</table>
+<?php } else { ?>
+	<p>No hay registros</p>
+<?php } ?>

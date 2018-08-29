@@ -1,0 +1,73 @@
+﻿<style>
+<!--
+#archivo{
+	background-color: #ffffff !important;
+}
+-->
+</style>
+
+<!-- Modal Resultado carga de XML -->
+<div id="modalAlert" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalResXmlLabel" aria-hidden="true" style="left: 40%; width: 700px;top: 2%;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalAltaMasivaLabel" style="font-size: 17.5px;font-weight: bold;"> Guardado <span id="lblXmlName"></span></h3>
+  	
+  </div>
+  <div class="modal-body">
+      Guardado correctamente
+  </div>
+  <div class="modal-footer">
+    <button id="btnGetValXml" name="btnGetValXml" class="btn btn-primary">Cerrar</button>
+  </div>
+</div>
+<!-- End Resultado carga de XML -->
+
+<div class="content-comprobacion" id="catalogo-content">
+	<div class="row-fluid">
+		<div class="span6">
+			<label for="tipoAsignacion">
+				<input type="hidden" id="solicitudid" name="solicitudid" value="<?php echo $this->solicitudid; ?>" >
+				<input type="hidden" id="empleadoid" name="empleadoid" value="<?php echo $this->empleadoid; ?>" >
+				<input type="hidden" id="tipocaptura" name="tipocaptura" value="<?php echo $this->tipocaptura; ?>" >
+			</label>
+		</div>
+		<div class="span6" style="padding-left: 480px;">
+			
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12" id="lista-comprobaciones">
+			<table class="table table-bordered">
+				<thead>
+			    	<tr>
+			      		<th>Categoría/Subcategoría</th>
+			      		<th>Concepto</th>
+			      		<th>Cuenta/Cartera/Concepto</th>
+			      		<th style="text-align:center;">Importe solicitado</th>
+			      		<th style="text-align:center;">Importe real</th>
+			      		<th>Acciones</th>
+			    	</tr>
+			  	</thead>
+			  	<tbody>
+<!--			    	<tr>-->
+<!--			      		<td>Cat->GASTOS ADMINISTRACIÓN<BR>Subcat->ALMACENAMIENTO Y DIGITALIZACIÓN</td>-->
+<!--			      		<td>CONCEPTODIGITALIZACIÓN DE EXPEDIENTES</td>-->
+<!--			      		<td>000000000000001<BR>JUAN JOSÉ LÓPEZ TORRES</td>-->
+<!--			      		<td style="text-align:right;" >$85,254.00</td>-->
+<!--			      		<td style="text-align:right;" >$85,254.00</td>-->
+<!--			      		<td><a href="#" >X1</a><a href="#">X5</a><i class="icon-remove " style="margin-top: 9px;"></td>-->
+<!--			    	</tr>-->
+			  	</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span6">
+		</div>
+		<div class="span6" style="padding-left: 480px;text-align: right;">
+<!--			<button class="btn btn-success" id="bntGuardarComprobacion" name="bntGuardarComprobacion">Guardar</button>-->
+<!--		<button class="btn btn-success" id="bntGuardarDummy" name="bntGuardarDummy">Guardar</button> -->
+		<div class="loading-search" style="display:none;position: absolute;right: right: 130px;width: 200px;top: 21px;"><img alt="Cargando..." src="<?php echo $this->baseUrl; ?>/images/loading.gif" width="600px" height="390px" ></div>
+		</div>
+	</div>
+</div>

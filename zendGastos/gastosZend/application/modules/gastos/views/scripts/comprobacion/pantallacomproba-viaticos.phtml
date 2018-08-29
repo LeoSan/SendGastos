@@ -1,0 +1,511 @@
+<style>
+<!--
+#archivo{
+	background-color: #ffffff !important;
+}
+.openPoliticas {
+	font-size: 12px;
+    font-weight: bold;
+}
+#buttonPDF {
+	width: 206px;
+	cursor: pointer;
+	height: 24px;
+	background-color: #343467;
+	color: white;
+	border: #343467;
+	-webkit-border-radius: 24px;
+	-moz-border-radius: 24px;
+	border-radius: 24px;
+}
+div.separador_gastos {
+    border: 1px solid #B0CBEF;
+    background-color: #DDDDDD;
+    font-size: 11pt;
+    font-weight: bold;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    margin: 5px 0 5px 0px;
+    padding: 5px 0px;
+}
+.colapsar,.mostrar {
+    background-color: #FFFFFF;
+    padding: 0 5px 0 5px;
+    margin: 2px 2px 2px 2px;
+    font-size: 11pt;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    clear: none;
+    cursor: pointer;
+}
+.date{
+    width: 56px;
+}
+.concepto{
+    width: 60px;
+}
+.monto{
+    width: 38px;
+    position:relative;
+}
+.tableTotal {
+	font-size: 9pt;
+	border-spacing: 0px;
+	border-collapse: collapse;
+	table-layout:fixed;
+	border: none;
+	display:block;
+	margin-bottom: 70px;
+}
+.tableTotal th {
+	background-color: white;
+	font-weight: bold;
+	font-size: 13px;
+	border: 1px solid #9EB6CE;
+	border-width: 1px 1px 1px 1px;
+	height: 17px;
+}
+.table.table-striped tbody td {
+	line-height: 14px!important;
+	font-size: 11px;
+}
+.panel-heading-comproba {
+	text-align: right;
+	margin-right: 20px;
+}
+-->
+</style>
+<script>
+	var inidate = '<?=$this->infocaso["DATEINI"]?>';
+	var findate = '<?=$this->infocaso["DATEFIN"]?>';
+</script>
+<br>
+
+<!-- BEGIN:: MODAL Politicas de Gasto -->
+<div id="modalPoliticas" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalPoliticas" aria-hidden="true" style="left: 40%; width: 700px;top: 2%;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalSubirPdfLabel" style="font-size: 17.5px;font-weight: bold;">Politicas de plan de viaje </h3>
+  	<div class="loading-search" style="display:none;position: absolute;right: right: 130px;width: 200px;top: 21px;"><img alt="Cargando..." src="<?php echo $this->baseUrl; ?>/images/loading.gif" width="600px" height="390px" ></div>
+  </div>
+  <div class="modal-body">
+  	<div class="panel-body">
+			<div class="container-fluid">
+		        <div class="row">
+		        	<div class="span12">					
+					<table class="table table-bordered table-striped">
+					<thead>
+						<tr><th>Tpogasto</th><th>Concepto</th><th>Tpocomprobante</th><th>Numveces</th><th>Limiteimporte</th></tr>
+					</thead>
+					<tbody>
+					<?php foreach( $this->allPoliticas as $poli ) { ?>
+						<tr><td><?echo $poli["TPOGASTO"]?></td>
+						<td><?=$poli["CONCEPTO"]?></td>
+						<td><?=$poli["TPOCOMPROBANTE"]?></td>
+						<td><?=$poli["NUMVECES"]?></td>
+						<td><?=$poli["LIMITEIMPORTE"]?></td></tr>
+					<?php } ?>
+					</tbody></table>
+		        	</div>
+		        </div>
+			</div>
+		</div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Aceptar</button>
+  </div>
+</div>
+<!-- END:: MODAL Politicas de Gasto -->
+
+<!-- BEGIN:: MODAL Subir Ticket -->
+<div id="modalUpload" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalUpload" aria-hidden="true" style="width: 400px;top: 20%;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalSubirTikLabel" style="font-size: 17.5px;font-weight: bold;">Comprobar ticket </h3>
+  	<div class="loading-search" style="display:none;position: absolute;right: right: 130px;width: 200px;top: 200px;"><img alt="Cargando..." src="<?php echo $this->baseUrl; ?>/images/loading.gif" width="600px" height="390px" ></div>
+  </div>
+  <div class="modal-body">
+  	<div class="panel-body">
+			<div class="container-fluid">
+		        <div class="row">
+		        	<div class="span12">					
+					    <input type="file" name="uploadfile_tiket" id="uploadfile_tiket" />
+					    <input type="hidden" name="idcomtik" id="idcomtik" />
+		        	</div>
+		        </div>
+			</div>
+		</div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Aceptar</button>
+  </div>
+</div>
+<!-- END:: MODAL Subir Ticket -->
+
+<!-- Modal Resultado carga de XML -->
+<div id="modalResXml" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalResXmlLabel" aria-hidden="true" style="left: 40%; width: 700px;top: 2%;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalAltaMasivaLabel" style="font-size: 17.5px;font-weight: bold;">Información archivo XML <span id="lblXmlName"></span></h3>
+  	<div class="loading-search" style="display:none;position: absolute;right: right: 130px;width: 200px;top: 21px;"><img alt="Cargando..." src="<?php echo $this->baseUrl; ?>/images/loading.gif" width="600px" height="390px" ></div>
+  </div>
+  <div class="modal-body">
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button id="btnGetValXml" name="btnGetValXml" class="btn btn-primary">Agregar</button>
+  </div>
+</div>
+<!-- End Resultado carga de XML -->
+
+
+<!-- BEGIN:: Container Superior -->
+<div class="container-fluid">
+	<div class="">
+		<div class="panel-heading-comproba"><a href="#" class="openPoliticas">Politicas de viaticos</a></div>
+		<div class="panel-heading-comproba"><h2> Plan de Viaje: <?=$this->appnumber?></h2></div>
+		<div class="panel-heading-comproba"><h5>Fecha: <?=$this->infocaso["FECHAINIM"].' a '.$this->infocaso["FECHAFINM"]?></h5></div>
+		<?php if( $this->tipo == 1 ) { ?>
+			<div class="panel-heading-comproba"><h5>Fecha comprobaci&oacute;n: <?=$this->infocaso["FDCOMPROBACION"]?></h5></div>
+		<?php } ?>
+		
+		<?php if( $this->tipo == 0 ) { ?>
+		<div class="panel-body">
+			<div class="container-fluid">
+		        <div class="row">
+		        	<div class="span12">
+		        		<div class="row-fluid">
+						<div class="span6">
+							<form class="form-inline">
+							  <label class="checkbox" for="archivoName">
+							    Tipo de comprobante
+							  </label>
+							  <select id="tipoComprobante" name="tipoComprobante" >
+									<option value="0"> -Seleccione- </option>
+									<?php foreach( $this->tipocomprobante as $item ) { ?> 
+										<option value="<?=$item["IDTPOCOMPROBANTE"] ?>"> <?=str_replace(array('ion','bus'),array('i&oacute;n','b&uacute;s'),$item["NMCOMPROBANTE"])?> </option>
+									<?php } ?>
+								</select>
+							</form>
+						</div>
+						<div class="span6">
+							<form class="form-inline examinar" style="display:none;">
+								<input type="file" name="file_xml" id="file_xml" />
+					  	    		<input type="hidden" name="newnameXml" id="newnameXml" value="" />
+								<input type="hidden" name="oldnameXml" id="oldnameXml" value="" />
+							</form>
+						</div>
+					</div>
+		        	</div>
+		        </div>
+			</div>
+		</div>
+		<?php } ?>
+	</div>
+</div> 
+<!-- END:: Container Superior -->
+
+
+<!-- BEGIN:: Container Forms -->
+<div class="container-fluid sinxml" id="catalogo-content" style="display:none;">
+	<div class="panel panel-info">
+		<div class="panel-body">
+			<div class="container-fluid">	
+				<div class="row-fluid">
+					<div class="span6">
+						<form class="form-horizontal" id="frmAsignacion" name="frmAsignacion">
+							<input type="hidden" id="empleadoid" name="empleadoid" value="<?php echo $this->userid; ?>">
+							<input type="hidden" id="solicitudid" name="solicitudid" value="<?php echo $this->solicitudid; ?>">
+							<input type="hidden" id="uuid" name="uuid" value="">
+							<input type="hidden" id="nombreArchivo" name="nombreArchivo" value="">
+							<input type="hidden" id="idEmpresa" name="idEmpresa" value="<?php echo $this->idEmpresa; ?>">
+							<input type="hidden" id="rfcEmpresa" name="rfcEmpresa" value="<?php echo $this->rfcEmpresa; ?>">
+							<input type="hidden" id="nombreEmpresa" name="nombreEmpresa" value="<?php echo $this->nombreEmpresa; ?>">
+							<input type="hidden" id="idProveedor" name="idProveedor" value="<?php echo $this->idProveedor; ?>">
+							<input type="hidden" id="rfcProveedor" name="rfcProveedor" value="<?php echo $this->rfcProveedor; ?>">
+							<input type="hidden" id="nombreProveedor" name="nombreProveedor" value="<?php echo $this->nombreProveedor; ?>">
+
+						  <div class="control-group" style="margin-bottom: 16px;">
+						    <label class="control-label" for="fechaFactura">Fecha</label>
+						    <div class="controls">
+						      <input type="text" id="fechaFactura" name="fechaFactura" maxlength="16" placeholder="Fecha" readonly>
+						    </div>
+						  </div>
+
+						  <div class="control-group" style="margin-bottom: 16px;">
+						    <label class="control-label" for="tipogasto">Tipo de gasto</label>
+						    <div class="controls">
+						      <select id="tpogasto" name="tpogasto">
+								<option value=0>--Seleccionar tipo de gasto--</option>
+							 <?php foreach( $this->alltipogasto as $item ) { ?>
+								<option class="tpocomp tpocomp_<?=$item["IDTPOCOMPROBANTE"]?>" value="<?=$item["IDTPOCOMPROBANTE"]."_".$item["IDTPOGASTO"]?>"> <?=str_replace(array('ion','bus'),array('i&oacute;n','b&uacute;s'),$item["NMGASTO"])?> </option>
+							 <?php } ?>
+						      </select>
+						    </div>
+						  </div>
+
+						  <div class="control-group" style="margin-bottom: 16px;">
+						    <label class="control-label" for="concepto">Concepto</label>
+						    <div class="controls">
+						      <select id="conceptogasto" name="conceptogasto">
+								<option class="optcto cto_0" value=0>--Seleccionar un concepto--</option>
+							 <?php foreach( $this->conceptos as $items ) { ?>
+								<option class="optcto <?php echo 'cto_'.$items["IDTPOCOMPROBANTE"].'_'.$items["IDTPOGASTO"] ?>" value="<?=$items["IDTPOCOMPROBANTE"]."_".$items["IDTPOGASTO"]."_".$items["IDCONCEPTO"] ?>"> <?=str_replace(array('ion','bus','Viat'),array('i&oacute;n','b&uacute;s','V&iacute;at'),$items["NMCONCEPTO"])?> </option>
+							 <?php } ?>
+						      </select>
+						    </div>
+						  </div>
+
+						  <div class="control-group" style="margin-bottom: 16px;">
+						    <label class="control-label" for="cartera">No Factura</label>
+						    <div class="controls">
+						      <input type="text" id="seriefolio" name="seriefolio" maxlength="20" placeholder="No Factura" >
+						    </div>
+						  </div>
+
+						  <div class="control-group opcionalinput inputTpo3" style="margin-bottom: 10px;">
+						    <label class="control-label" for="proveedor">Proveedor</label>
+						    <div class="controls">
+						      	<input type="text" id="proveedor" name="proveedor" class="input-xxlarge" maxlength="250" placeholder="Proveedor" >
+						    </div>
+						  </div>
+
+						  <div class="control-group" style="margin-bottom: 16px;">
+						    <div class="controls">
+							    <input type="file" name="uploadfile_pdf" id="uploadfile_pdf" />
+					  	            <input type="hidden" name="archivoPdf" id="archivoPdf" value="" />
+							    <input type="text" name="oldnamePdf" disabled class="hide" id="oldnamePdf" palceholder="XXX" />
+							    <input type="hidden" name="newnamePdf" id="newnamePdf" value="" />
+							    <input type="hidden" name="comprobacionId" id="comprobacionId" value="" />
+						    </div>
+						  </div>
+						</form>
+					
+					
+					</div>
+					<div class="span6" >
+						<form class="form-horizontal" id="frmAsignacion2" name="frmAsignacion2">
+
+						  <div class="control-group" style="margin-bottom: 5px;">
+						    <label class="control-label" for="importe">Importe</label>
+						    <div class="controls">
+						      	<input type="number" id="importe" name="importe" min="0" maxlength="120" value=0 placeholder="Importe" >
+						    </div>
+						  </div>
+
+						  <div class="control-group hide" style="margin-bottom: 5px;">
+						    <label class="control-label" for="iva">% iva</label>
+						    <div class="controls">
+							    <select id="iva" name="iva" >
+									<option value="0"> -Sin iva - </option>
+									<option value="16"> 16 </option>
+								</select>
+							</div>
+						  </div>
+
+						  <div class="control-group hide" style="margin-bottom: 5px;">
+						    <label class="control-label" for="importeIva">Importe IVA</label>
+						    <div class="controls">
+							      <input type="number" id="importeIva" name="importeIva" min="0" maxlength="20" readonly placeholder="Importe Iva" >
+						    </div>
+						  </div>
+
+						  <div class="control-group" style="margin-bottom: 5px;">
+						    <label class="control-label" for="otrosImpuestos">Otros impuestos</label>
+						    <div class="controls">
+							      <input type="number" id="otrosImpuestos" name="otrosImpuestos" value=0 min=0 maxlength="20" placeholder="Otros Impuestos" >
+						    </div>
+						  </div>
+
+						  <div class="control-group" style="margin-bottom: 55px;">
+						    <label class="control-label" for="total">Total</label>
+						    <div class="controls">
+							      <input type="number" id="total" name="total" value=0 min="0" maxlength="20" placeholder="Total" readonly>
+						    </div>
+						  </div>
+
+						  <div class="control-group" style="margin-bottom: 5px;float: right;margin-right: 20px;">
+							<input type="hidden" name="tipoaccion" id="tipoaccion" value="" />
+							<input type="hidden" name="idempleado" id="idempleado" value="<?=$this->userid?>" />
+							<button type="button" class="btn btn-large btn-primary" id="btnAgregarComprobante" name="btnAgregarComprobante">Agregar</button>  
+						  </div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> 
+<!-- END:: Container Forms -->
+
+
+<div class="container-fluid" id="catalogo-content-new"><!-- Container -->
+	<div class="panel panel-info">
+		<div class="panel-body">
+			<div class="container-fluid">	
+				<div class="row-fluid">
+					<div class="span12" id="datos-factura">
+						<?php foreach( $this->tipogasto as $item ) { ?>
+						<div class="separador_gastos"><span id='separador_<?php echo $item["IDTPOGASTO"] ?>' class='colapsar'>-</span><span id='separador_<?php echo $item["IDTPOGASTO"] ?>' class='mostrar hide'>+</span><?=str_replace(array('ion','bus'),array('i&oacute;n','b&uacute;s'),$item["NMGASTO"])?><span id='total_<?=$item["IDTPOGASTO"] ?>' style='clear: none; display:inline; float:right; margin-right:25px;'><?php echo "$ ". number_format($item["TOTAL"],2) ?></span></div>
+							<div class="contenedor_gastos separador_<?php echo $item["IDTPOGASTO"] ?>" style="display: block;">
+							<table class="table table-bordered table-striped">
+							<thead><tr><th></th><th>Origen</th><th>Fecha</th><th>Concepto</th><th>Num. Factura</th>
+								<th>Proveedor</th><th>RFC</th><th>Monto</th><th>IVA</th><th>Otros Imp.</th>
+								<th>Total</th><th>XML</th><th>PDF</th><th>Ticket</th><th>Acciones</th></tr></thead>
+							<tbody>
+							<?php
+								foreach( $this->comprobantes as $dato ) {
+								if($item["IDTPOGASTO"] == $dato["IDTPOGASTO"] ) {
+									$tipoComp = ( $dato["IDTPOCOMPROBANTE"]==1 ) ? 'F' : '' ;
+							?>
+							<tr>
+								<td><div><?php echo $tipoComp ?></div></td>
+								<td><div><?php echo $dato["FCORIGEN"] ?></div></td>
+								<td class="date"><div><?php echo $dato["FDCOMPROBACION"] ?></div></td>
+								<td class="concepto"><div><?php echo $dato["NMCONCEPTO"] ?></div></td>
+								<td><div><?php echo $dato["FCNOFACTURA"] ?></div></td>
+								<td><div><?php echo $dato["NMRFC"] ?></div></td>
+								<td><div><?php echo $dato["FCRFC"] ?></div></td>
+								<td class="monto"><div style="position: absolute;right: 2px;"><?php echo "$ ". number_format($dato["FNIMPORTE"],2) ?></div></td>
+							<?php
+							//								$fniva = number_format( ((int)$dato["FNIVAPRC"])*(float)$dato["FNIMPORTE"],2 );
+							$fniva = $dato["FNIVA"];
+
+							?>
+								<td class="monto"><div style="position: absolute;right: 2px;"><?php echo "$ ". $fniva ?>  </div></td>
+								<td class="monto"><div style="position: absolute;right: 2px;"><?php echo "$ ". number_format($dato["FNOTROSIMPUEST"],2) ?></div></td>
+								<td class="monto"><div style="position: absolute;right: 2px;"><?php echo "$ ". number_format($dato["FNTOTAL"],2) ?></div></td>
+								<?php $xml = ''; if($dato["FCFACTURAXML"] != '')
+								{
+									$archivo = explode('/', $dato["FCFACTURAXML"]);
+									$indice = count($archivo)-1;
+									$xml = "target='_blank' href='http://doc.pendulum.com.mx/PM/facturas/$archivo[$indice]'";
+								
+									echo "<td><div><a $xml>Ver</a></div></td>";
+								} else {
+									echo "<td></td>";
+									$indice = 0;
+								}
+								$pdf = ''; 
+								if($dato["FCFACTURAPDF"]!= '')
+								{
+									$archivo = explode('/', $dato["FCFACTURAPDF"]);
+									$indice = count($archivo)-1;
+									$pdf = "target='_blank' href='http://doc.pendulum.com.mx/PM/facturas/$archivo[$indice]'";
+									echo "<td><div><a $pdf>Ver</a></div></td>";
+								} else {
+									echo "<td></td>";  
+									if( $indice ) {
+									$archivo[$indice] = '';
+									} else { $archivo[0] = 0; }
+								}
+								$ticket = ''; 
+								if($dato["FCFACTURAPDFC"]!= '')
+								{
+									//$archivo = explode('/', $dato["FCFACTURAPDFC"]);
+									//$indice = count($archivo)-1;
+									 $dato["FCFACTURAPDFC"] = str_replace('cases_ShowGastosComp', 'cases_ShowPlanViaje', $dato["FCFACTURAPDFC"]);
+									$ticket = "target='_blank' href='".$dato["FCFACTURAPDFC"]."'";
+									echo "<td><div><a $ticket>Ver</a></div></td>";
+								} else if ( $this->tipo == 1 ) {
+									echo "<td><a></a></td>";
+									if( $indice ) {
+									$archivo[$indice] = '';
+									} else { $archivo[0] = 0; }
+								} else {
+									echo "<td><a class='uploadtk' href='#'>Subir</a></td>";  
+									if( $indice ) {
+									$archivo[$indice] = '';
+									} else { $archivo[0] = 0; }
+								}
+								if( $this->tipo == 0 ) {
+								?>
+								<td>
+								<?php if($dato['IDTPOCOMPROBANTE'] != 1) { ?>
+									<span><i class="editRow icon-edit" title="Editar" style="cursor:pointer;">
+<?php echo "<div class='dataForm' 
+		data-id='".$dato['IDCOMPROBACION']."' 
+		data-idcaso='".$dato['IDGASTO']."' 
+		data-iduser='".$dato['IDEMPLEADO']."' 
+		data-idtpogasto='".$dato['IDTPOGASTO']."' 
+		data-idconcepto='".$dato['IDCONCEPTO']."' 
+		data-tpocomp='".$dato['IDTPOCOMPROBANTE']."' 
+		data-fdcomp='".$dato['COPYFDCOMPROBACION']."' 
+		data-factura='".$dato['FCNOFACTURA']."' 
+		data-proveedor='".$dato['NMRFC']."' 
+		data-rfc='".$dato['FCRFC']."' 
+		data-importe='".$dato['FNIMPORTE']."' 
+		data-porciva='".$dato['FNIVAPRC']."' 
+		data-importeiva='".$dato["FNIVA"]."' 
+		data-otrosimp='".$dato['FNOTROSIMPUEST']."' 
+		data-total='".$dato['FNTOTAL']."' 
+		data-urlpdf='".$archivo[$indice]."' 
+		data-oldname='".$dato['NMORIGPDF']."' 
+		data-fcorigen='".$dato['FCORIGEN']."'></div>"; ?>
+									</i></span>
+								<?php } else { echo "<span><i class='icon-none'></i></span>"; } ?>
+									<span><i class="icon-remove deleteRow" title="Eliminar" style="cursor:pointer;">
+<?php echo "<div class='dataForm' 
+		data-id='".$dato['IDCOMPROBACION']."' 
+		data-idcaso='".$dato['IDGASTO']."' 
+		data-iduser='".$dato['IDEMPLEADO']."' 
+		data-idtpogasto='".$dato['IDTPOGASTO']."' 
+		data-idconcepto='".$dato['IDCONCEPTO']."' 
+		data-tpocomp='".$dato['IDTPOCOMPROBANTE']."' 
+		data-fdcomp='".$dato['COPYFDCOMPROBACION']."' 
+		data-factura='".$dato['FCNOFACTURA']."' 
+		data-proveedor='".$dato['NMRFC']."' 
+		data-rfc='".$dato['FCRFC']."' 
+		data-importe='".$dato['FNIMPORTE']."' 
+		data-porciva='".$dato['FNIVAPRC']."' 
+		data-importeiva='".$dato["FNIVA"]."' 
+		data-otrosimp='".$dato['FNOTROSIMPUEST']."' 
+		data-total='".$dato['FNTOTAL']."' 
+		data-urlpdf='".$archivo[$indice]."' 
+		data-oldname='".$dato['NMORIGPDF']."'
+		data-fcorigen='".$dato['FCORIGEN']."'></div>"; ?>
+</i></span></td>
+<?php } else if ( $this->tipo == 1 ) {
+	$checked = ( $dato['FCVALIDACION'] === '1' ) ? 'checked' : '';
+	echo '<td><input type="checkbox" class="validDoc" '.$checked.' name="validDoc" value="'.$dato['IDCOMPROBACION'].'" ></td>';
+} else {
+	echo '<td></td>';
+} ?>
+
+								</tr>
+							<?php }} ?>
+							</tbody>
+							</table>
+							</div>
+						<?php } ?>
+						<table class="tableTotal table table-bordered table-striped">
+					<?php $total=0; $total_importe=0; $total_iva=0; $total_importeSF=0; $total_importeF=0; $total_ivaSF=0; $total_ivaF=0; $total_sf=0; $total_facturado=0;
+						foreach( $this->comprobantes as $datos ) { 
+							$total_importe += $datos["FNIMPORTE"];
+							$fniva = $datos["FNIVA"];
+							$total_iva += $fniva;
+							$total += $datos['FNTOTAL'];
+
+							if($datos['IDTPOCOMPROBANTE']== 2 || $datos['IDTPOCOMPROBANTE']== 3)
+							{
+								$total_importeSF += $datos["FNIMPORTE"];
+								$total_ivaSF += $fniva;
+								$total_sf += $datos['FNTOTAL'];
+							} else if($datos['IDTPOCOMPROBANTE']== 1) {
+								$total_importeF += $datos["FNIMPORTE"];
+								$total_ivaF += $fniva;
+								$total_facturado += $datos['FNTOTAL'];
+							}
+						}
+					?>
+					<thead><tr style="border-top: 1px solid #9EB6CE;"><th style="width: 70%;text-align: right;">Total comprobaci&oacute;n</th><th style="text-align: right;padding-right:5px;font-size: 10pt; width: 10%;">$ <span id="tm"><?php echo number_format($total_importe,2) ?></span></th><th style="text-align: right;padding-right:5px;font-size: 10pt;width: 10%;">$ <span id="ti"><?php echo number_format($total_iva,2) ?></span></th><th></th><th style="text-align: right;padding-right:5px;font-size: 10pt;width: 10%;">$ <span id="tc"><?php echo number_format($total,2) ?></span></th></tr></thead>
+					<tbody><tr><td style="text-align: right;">Total facturado</td><td style="text-align: right;padding-right:5px;"><span id="tmf"><?php echo "$ ". number_format($total_importeF,2) ?></span></td><td style="text-align: right; padding-right:5px;"><span id="tif"><?php echo "$ ". number_format($total_ivaF,2) ?></span></td><td></td><td style="text-align: right; padding-right:5px;"><span id="tf"><?php echo "$ ". number_format($total_facturado,2) ?></span></td></tr>
+					<tr><td style="text-align: right;">Total sin factura</td><td style="text-align: right;padding-right:5px;"><span id="tmsf"><?php echo "$ ". number_format($total_importeSF,2) ?></span></td><td style="text-align: right; padding-right:5px;"><span id="tisf"><?php echo "$ ". number_format($total_ivaSF,2) ?></span></td><td></td><td style="text-align: right; padding-right:5px;"><span id="tsf"><?php echo "$ ". number_format($total_sf,2) ?></span></td></tr>
+				</tbody></table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> <!-- End Container -->

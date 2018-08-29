@@ -1,0 +1,356 @@
+<link rel="stylesheet" media="screen" href="<?=$this->baseUrl?>/lib/jqgrid_5.1.1/css/ui.jqgrid.css">
+<script type="text/javascript" src="<?=$this->baseUrl?>/lib/jqgrid_5.1.1/js/jquery.jqGrid.min.js"></script>
+<style>
+<!--
+	#tableGastos {
+		font-size: 12px;
+		overflow-x: hidden;
+	}
+	.fm-button {
+    	padding: .3em 1em 0.2em 1em;
+	}
+	.row {
+    	margin-right: 0!important;
+    }
+	.ui-jqgrid-labels {
+		font-size: 9px;
+	}
+	.form-control {
+		height: 24px!important;
+		font-size: 12px!important;
+	}
+	a.clearsearchclass {
+    	font-size: 12px;
+    	font-weight: bold;
+    	cursor: pointer;
+	}
+	table.linksspace a {
+		margin: 5px;
+	}
+	.jqgfirstrow {
+		display: none;
+	}
+	.ui-jqgrid-bdiv div {
+		overflow-x: hidden;
+	}
+	.ui-jqgrid .ui-search-table td.ui-search-clear {
+    	width: 0!important;
+	}
+	.ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {
+    	white-space: normal!important;
+	}
+	.ui-jqgrid .ui-jqgrid-htable .ui-th-div {
+    	height: 24px!important;
+	}
+	.ui-jqgrid-htable.table{
+		margin-bottom: 0;
+	}
+	.table>tbody>tr>td, .table>thead>tr>th {
+		padding: 4px!important;
+	}
+	.ui-jqgrid tr.jqgrow td {
+		white-space: normal!important;
+	}
+	.modal {
+		width: 80%!important;
+		left: 30%;
+	}
+	.modal-lg {
+		width: 100%!important;
+	}
+-->
+</style>
+
+<div class="container" >
+
+	<div id="myModal" class="modal fade" style="display:none" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  		<div class="modal-dialog modal-lg">
+    		<div class="modal-content">
+    			
+      			<!-- 	<div class="modal-header">
+        				<h5 class="modal-title">Configuracion de conceptos</h5>
+        				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          				<span aria-hidden="true">&times;</span>
+        				</button>
+      				</div>
+      			 -->
+      				<div class="modal-body">
+      				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  					<table id="modalTable" class="table table-hover"></table>
+					<div id="jqGridPagerModal"></div>
+					</div>
+					</div>
+					<div class="modal-footer">
+        				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      				
+				</div>
+    		</div>
+  		</div>
+	</div>
+	
+	<input type="hidden" id="idequivalencia" >
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  		<table id="tableGastos" class="table table-hover"></table>
+		<div id="jqGridPager"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(function(){
+		$.jgrid.styleUI.Bootstrap.base.rowTable = "table table-bordered table-striped";
+		//$.datepicker.regional["es"];
+
+		var baseUrl = '<?=$this->baseUrl?>';
+		var jsondata = '<?=$this->data?>';
+
+		jsondata = $.parseJSON(jsondata);
+
+		var altura = $( window ).height();
+		
+		$('#tableGastos').jqGrid({
+			datatype: "local",
+			data: jsondata,
+			editurl: baseUrl+'/gastos/detalle/oper-equivalencia/',
+            colModel: [
+            	{ label: 'ID',     name: 'IDDATO', key: true, sorttype:'number' },
+                { label: 'Nombre', name: 'NOMBRE', editable: true, edittype: "text" },
+                { label: 'Total conceptos', name: 'TOTALC', sorttype:'number' },
+                { label: 'Fecha',  name: 'FECREGISTRO'  },
+                { label: 'Estatus',name: 'STATUS', 
+                  formatter: function (cellvalue, options, rowObject) {
+                    if ( cellvalue == 'A' ) { return 'ACTIVADO'; } else { return 'DESACTIVADO'; }
+                  }, 
+                  editable: true, edittype: "select",
+                  editoptions: { value: "A:ACTIVADO;I:DESACTIVADO" } },
+                { label: 'Acciones', name: 'ACCION', resizable: false, search: false, 
+                  sortable: false, formatter:actionButtonFormatter 
+                }
+            ],
+            loadComplete : function(){
+            	$('.asignaConcepto').off('click').on('click',function(e){
+                	e.preventDefault();
+                	$("#myModal").modal();
+                	$("#idequivalencia").val( $(this).attr('data-row') );
+                	
+                	$.ajax({ 
+                        url: baseUrl + '/gastos/detalle/get-conceptos-equivale/',
+                        type: 'POST',
+                        data: { user: $("#quasarid").val() },
+                        dataType: 'json',
+                        success: function(dataToLoad) {
+							$("#modalTable").jqGrid("clearGridData", true);
+                        	$('#modalTable').jqGrid('setGridParam', {data: dataToLoad});
+                        	$('#modalTable').trigger('reloadGrid');
+                        }
+              		});
+                });
+            },
+			page: 1,
+            rowNum: 25,
+			scrollPopUp:true,
+			viewrecords: true,
+			loadonce : true,
+           // scroll: 1, 
+            autowidth: true,
+            height: (altura/2),
+			//styleUI : "Bootstrap",
+			shrinkToFit: true,
+			regional : 'es',
+		    add: true, 
+		    sortname : 'IDDATO',
+            emptyrecords: 'Sin resultados que mostrar',  
+            pager: "#jqGridPager"
+        });
+
+		
+		$("#tableGastos").jqGrid('filterToolbar', { searchOnEnter: false, stringResult: true });
+		$("#tableGastos").jqGrid('bindKeys');
+
+		$('#tableGastos').navGrid('#jqGridPager',
+                { edit: true, add: true, del: false, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+                {
+                    editCaption: "Editar",
+                    afterSubmit: function(response, postdata) {
+                        if(response.status == 200) {
+                        	var success = true;
+                            var message = "OK";
+                            var grid = $("#tableGastos");
+                            selectedRowId = grid.jqGrid ('getGridParam', 'selrow');
+                            grid.jqGrid('setCell', selectedRowId, 'NOMBRE', postdata.NOMBRE);
+                            grid.jqGrid('getLocalRow', selectedRowId).NOMBRE = postdata.NOMBRE;
+                            grid.jqGrid('setCell', selectedRowId, 'STATUS', postdata.STATUS);
+                            grid.jqGrid('getLocalRow', selectedRowId).STATUS = postdata.STATUS;
+
+                            
+
+                            return [success,message,postdata.id];
+                        } else {
+                            console.info( response );
+                        }
+                    },
+                    recreateForm: true,
+					checkOnUpdate : true,
+					checkOnSubmit : true,
+                    closeAfterEdit: true,
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    }
+                },
+                // options for the Add Dialog
+                {
+                    closeAfterAdd: true,
+                    recreateForm: true,
+                    afterSubmit: function(response, postdata) {
+                        if(response.status == 200) {
+                        	var success = true;
+                            var message = "OK";
+                            var grid = $("#tableGastos");
+                            var data = $.parseJSON( response.responseText );
+                            var mydataadd = data.data;
+                            grid.addRowData(data.ID,mydataadd);
+                            return [success,message,postdata.id];
+                        } else {
+                            console.info( response );
+                        }
+                    },
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    }
+                }).navButtonAdd('#jqGridPager',{
+              	   caption:"", 
+            	   buttonicon:"ui-icon-refresh", 
+            	   onClickButton: function(){ 
+            		    $.ajax({ 
+                           url: baseUrl + '/gastos/detalle/equivalencia-reload/',
+                           type: 'POST',
+                           dataType: 'json',
+                           success: function(dataToLoad) {
+        						$("#tableGastos").jqGrid("clearGridData", true);
+                           		$('#tableGastos').jqGrid('setGridParam', {data: dataToLoad});
+                           		$('#tableGastos').trigger('reloadGrid');
+                           	
+                           }
+                 		});
+            		   
+            	   }, 
+            	   position:"last"
+            	});
+
+		var datamodal = {};
+		$('#modalTable').jqGrid({
+			datatype: "local",
+			data: datamodal,
+			editurl: baseUrl+'/gastos/detalle/set-equivalencia/',
+            colModel: [
+				{ label: 'Id concepto',             name: 'IDCONCEPTO',   sorttype:'number' },
+				{ label: 'Categoria',      name: 'NMCATEGORIA'  },
+				{ label: 'Subcategoria',   name: 'NMSUBCATEGORIA' },
+                { label: 'Nombre',         name: 'CONCEPTO' },
+            //    { label: 'ID Equivalencia',name: 'IDEQUVALENCIA'  },
+                { label: 'Agrupaci&oacute;n',   name: 'NMEQUVALENCIA'  },
+                { label: 'Cartera',        name: 'CARTERA'  }
+            ],
+			page: 1,
+            rowNum: 200,
+			viewrecords: true,
+			loadonce : true,
+			multiselect: true,
+           // scroll: 1, 
+            autowidth: true,
+			//width: 920,
+            height: (altura/3),
+			//styleUI : "Bootstrap",
+			shrinkToFit: true,
+			regional : 'es',
+		    sortname : 'IDCONCEPTO',
+            emptyrecords: 'Sin resultados que mostrar',  
+            pager: "#jqGridPagerModal"
+        }).navGrid('#jqGridPagerModal',{edit:false,add:false,del:false,search:false,refresh: false})
+        .navButtonAdd('#jqGridPagerModal',{
+     	   caption:"", 
+    	   buttonicon:"ui-icon-disk", 
+    	   onClickButton: function(){ 
+        	   var grid = $('#modalTable');
+    		   var selRowIds = grid.jqGrid ('getGridParam', 'selarrrow');
+    		   var cadenaid = selRowIds.join(',');
+    		   var cartera = '';
+    		   var concepto = '';
+
+    		   for (var i = 0; i < selRowIds.length; i++) 
+    		   {
+    		       var rowId = selRowIds[i];
+    		       var rowData = grid.jqGrid ('getRowData', rowId);
+    		       
+    		       cartera = cartera + rowData.CARTERA + ',';
+    		       concepto = concepto + rowData.IDCONCEPTO + ',';
+    		   }
+
+    		   $.ajax({ 
+                   url: baseUrl + '/gastos/detalle/set-conceptos-equivale/',
+                   type: 'POST',
+                   data: { 
+                	   idequivalencia: $("#idequivalencia").val(),
+                	   cadenaid: concepto,
+                	   cartera: cartera
+                   },
+                   dataType: 'json',
+                   success: function(dataToLoad) {
+						$("#modalTable").jqGrid("clearGridData", true);
+                   		$('#modalTable').jqGrid('setGridParam', {data: dataToLoad});
+                   		$('#modalTable').trigger('reloadGrid');
+                   	
+                   }
+         		});
+    		   
+    	   }, 
+    	   position:"last"
+    	})
+    	.navButtonAdd('#jqGridPagerModal',{
+     	   caption:"", 
+    	   buttonicon:"ui-icon-circle-minus", 
+    	   onClickButton: function(){ 
+    		   var grid = $('#modalTable');
+    		   var selRowIds = grid.jqGrid ('getGridParam', 'selarrrow');
+    		   var cadenaid = selRowIds.join(',');
+    		   var cartera = '';
+    		   var concepto = '';
+
+    		   for (var i = 0; i < selRowIds.length; i++) 
+    		   {
+    		       var rowId = selRowIds[i];
+    		       var rowData = grid.jqGrid ('getRowData', rowId);
+    		       
+    		       cartera = cartera + rowData.CARTERA + ',';
+    		       concepto = concepto + rowData.IDCONCEPTO + ',';
+    		   }
+    		   
+    		   $.ajax({ 
+                   url: baseUrl + '/gastos/detalle/set-conceptos-equivale/',
+                   type: 'POST',
+                   data: { 
+                	   idequivalencia: 0,
+                	   cadenaid: concepto,
+                	   cartera: cartera
+                   },
+                   dataType: 'json',
+                   success: function(dataToLoad) {
+						$("#modalTable").jqGrid("clearGridData", true);
+                   		$('#modalTable').jqGrid('setGridParam', {data: dataToLoad});
+                   		$('#modalTable').trigger('reloadGrid');
+                   	
+                   }
+         		});
+    		   
+    	   }, 
+    	   position:"last"
+    	});
+
+		$("#modalTable").jqGrid('filterToolbar', { searchOnEnter: false, stringResult: true });
+        
+		 function actionButtonFormatter ( cellvalue, options, rowObject )
+	     {
+	        return '<a class="asignaConcepto" data-row='+cellvalue+' href="#" ><span id="action" class="ui-icon ui-icon-gear"></span></a>';
+	     }
+	
+	});
+</script>

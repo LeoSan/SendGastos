@@ -1,0 +1,106 @@
+﻿<style>
+<!--
+#archivo{
+	background-color: #ffffff !important;
+}
+-->
+</style>
+<link href="<?php //echo $this->baseUrl; ?>/gastosfact/public/css/main.min.css" rel="stylesheet" media="screen">
+<link href="<?php //echo $this->baseUrl; ?>/gastosfact/public/css/archivo.min.css" rel="stylesheet" media="screen">
+<link href="<?php //echo $this->baseUrl; ?>/gastosfact/public/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="<?php //echo $this->baseUrl; ?>/gastosfact/public/css/table.css" rel="stylesheet" media="screen">
+<link href="<?php //echo $this->baseUrl; ?>/gastosfact/public/lib/uploadify/uploadify.css"rel="stylesheet" type="text/css" />
+<!-- Modal Alta Masiva Créditos ----- class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalAltaMasivaLabel" aria-hidden="true" style="left: 45%; width: 700px;top: 2%;" -->
+<div id="modalAltaMasiva1" >
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modalAltaMasivaLabel"><i class="icon-list-alt" ></i> Prorratear cuentas del gasto.</h3>
+  	<div class="loading-search" style="display:none;position: absolute;right: right: 130px;width: 200px;top: 21px;"><img alt="Cargando..." src="<?php echo $this->baseUrl; ?>/images/loading.gif" width="600px" height="390px" ></div>
+  	<a class="btn btn-primary" id="btnConceptosValidos" style="position: absolute;top: 12px;left: 528px;" ><i class="icon-book icon-white" style="margin-top: 0px;"></i> Mis conceptos</a>
+  </div>
+  <div class="modal-body">
+  	<form id="frmAltaMasiva" name="frmAltaMasiva" class="form-horizontal">
+	  <div class="control-group" style="margin-bottom: 5px;" >
+	    <h3 id="concepetoSeleccionadoLabel"></h3>
+<!--	    <label class="control-label" for="conceptoAltMas">Concepto</label>-->
+<!--	    <div class="controls">-->
+<!--	      <select id="conceptoAltMas" name="conceptoAltMas" >-->
+<!--	      	<option value="">-Seleccione-</option>-->
+<!--	      </select>-->
+<!--	    </div>-->
+	  </div>
+	  <div id="muestaConceptosValidos" class="alert alert-block alert-info fade in" style="position: absolute;left: 400px;top: 35px;padding: 8px 5px 8px 1px;color: #050505;background-color: #d0d0d0;border-color: #D0D0F4;display:none;" >
+        <ul>
+        	<?php foreach ($this->misconceptos as $item): ?>
+        	<li><strong><?php echo $item['IDCONCEPTO']; ?> - </strong><?php echo $item['NMCONCEPTO']; ?></li>
+        	<?php endforeach; ?>
+        </ul>
+	</div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="file_upload" style="width: 115px;"><a href="<?php echo $this->baseUrl; ?>/images/LAYOUTPPRORRATEOCREDITOS.csv">Descargar layout</a></label>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;">
+	    <label class="control-label" for="file_upload_prorrateo" style="width: 115px;">1) Cargar archivo</label>
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;padding-left: 167px;">
+	  	    <input type="file" name="file_upload_prorrateo" id="file_upload_prorrateo" />
+		  	<input type="hidden" name="archivoCargado" id="archivoCargado" value="" />
+	  	    <input type="hidden" name="archivo" id="archivo" value="" />
+	  	    <input type="hidden" name="verificado" id="verificado" value="N" />
+	  	    <input type="hidden" name="procesado" id="procesado" value="N" />
+	  </div>
+
+		<div id="msjErrorUploadError" class="alert alert-error" style="display:none;">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			Error al subir archivo
+		</div>
+	  <div id="msjErrorUploadSuccess" class="alert alert-success" style="display:none;">
+	    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	   		El archivo archivo.csv se cargó correctamente!
+	  </div>
+	  <div class="control-group" style="margin-bottom: 5px;padding-left: 55px;">
+	    <label>NOTA: Instrucciones de la carga de archivo.</label>
+	    <span class="help-block">El archivo debe ser CSV delimitado por COMAS. Sólo debe tener cuentas e importe.</span>
+	    <span class="help-block">El nombre del archivo NO debe tener caracteres especiales, Ñ, ñ, epacios.</span>
+	    <span class="help-block">El tamaño del nommbre del archivo NO debe revasar los 15 caracteres.</span>
+	  </div>
+	</form>
+  </div>
+  <div class="modal-footer">
+  	<!--
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button id="btnFinalizarAltaMasiva" name="btnFinalizarAltaMasiva" class="btn btn-primary">Finalizar</button>
+    -->
+  </div>
+</div>
+
+<form class="form-horizontal" id="frmProrrateoGasto" name="frmProrrateoGasto">
+<input type="hidden" id="empleadoid" name="empleadoid" value="<?php echo $this->empleadoid; ?>">
+				<input type="hidden" id="solicitudid" name="solicitudid" value="<?php echo $this->solicitudid; ?>">
+				<input type="hidden" id="tiposolicitud" name="tiposolicitud" value="<?php echo $this->tiposolicitud; ?>">
+				<input type="hidden" id="tipocaptura" name="tipocaptura" value="<?php echo $this->tipocaptura; ?>">
+				<input type="hidden" id="puestoid" name="puestoid" value="<?php echo $this->puestoid; ?>">
+				<input type="hidden" id="usuariopm" name="usuariopm" value="<?php echo $this->usuariopm; ?>">
+				<input type="hidden" id="appuid" name="appuid" value="<?php echo $this->appuid; ?>">
+				<input type="hidden" id="conceptoactual" name="conceptoactual" value="<?php echo $this->miconcepto; ?>">
+				<input type="hidden" id="claveQuasar" name="claveQuasar" value="<?php echo $this->claveQuasar; ?>">
+</form>
+
+<!-- End Modal Alta Masiva Créditos -->
+<div class="content-asignacion" id="catalogo-content">
+	<div class="row-fluid">
+		<div class="span12" id="lista-creditos-prorrateo">
+
+		</div>
+	</div>
+</div>
+
+<link rel="stylesheet" type="text/css"  href="<?php //echo $this->baseUrl; ?>/gastosfact/public/lib/uploadify/uploadify.css"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+<script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+<script type="text/javascript" src="<?php //echo $this->baseUrl; ?>/gastosfact/public/lib/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="<?php //echo $this->baseUrl; ?>/gastosfact/public/js/catalogos/layout.js"></script>
+<script type="text/javascript" src="<?php //echo $this->baseUrl; ?>/gastosfact/public/js/catalogos/menu.js"></script>
+<script type="text/javascript" src="<?php //echo $this->baseUrl; ?>/gastosfact/public/lib/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="<?php //echo $this->baseUrl; ?>/gastosfact/public/lib/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="<?php //echo $this->baseUrl; ?>/gastosfact/public/js/gastos/prorrateo-index.js?v=2.1"></script>

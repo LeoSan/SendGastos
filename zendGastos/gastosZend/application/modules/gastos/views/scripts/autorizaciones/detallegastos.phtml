@@ -1,0 +1,83 @@
+﻿<?php if( count($this->gastos) > 0 ) { ?>
+<table class="table table-bordered">
+	<thead style="font-size: 10px;" >
+    	<tr style="background-color:#999;color: #fff;">
+      		<th>Categoría/Subcategoría/Concepto</th>
+      		<th>Cuenta/Cartera</th>
+      		<th>Centro costo</th>
+      		<th style="text-align:center;">Importe</th>
+      		<th>Es facturable</th>
+      		<th>Es reembolsable</th>
+      		<th>Umbral</th>
+      		<th>Pago doble</th>
+      		<th>Etapas</th>
+      		<th>Codigos</th>
+      		<th>Docto inicio</th>
+      		<th>Docto soporte</th>
+      		<th>Ligas</th>
+    	</tr>
+  	</thead>
+  	<tbody style="font-size: 8px;">
+  		<?php $total = 0;  foreach($this->gastos as $item): 
+  		
+  		$detalle = array();
+  		if($item['FCDETALLECREDITO'] != ''){
+  			$detalle = explode('|', $item['FCDETALLECREDITO']);
+  		} else {
+  			$detalle = array();
+  		}
+  		$detalleCredito = $item['FCCREDITOCARTERA'];
+  		$detalleCredito .= isset($detalle[0])?'|' .$detalle[0]:'';
+  		$detalleCredito .= isset($detalle[3])?'|' .$detalle[3]:'';
+  		$detalleCredito .= isset($detalle[6])?'|' .$detalle[6]:'';
+  		$detalleCredito .= isset($detalle[1])?'|' . '<br/>' .$detalle[1]:'';
+  		?>
+    	<tr>
+      		<td><?php echo $item['CATEGSUBCAT']; ?></td>
+      		<td><?php echo $detalleCredito; ?></td>
+      		<td><?php echo $item['FCCENTROCOSTOS']; ?></td>
+      		<td><?php echo $item['FNIMPORTE']; ?></td>
+      		<td><?php echo $item['ESFACTURABLE']== 'S'?'SI':'NO'; ?></td>
+      		<td><?php echo $item['ESREEMBOLSABLE']== 'S'?'SI':'NO'; ?></td>
+      		<td><?php echo $item['UMBRAL']; ?></td>
+      		<td><?php echo $item['PAGODOBLE']; ?></td>
+      		<td><?php echo $item['ETAPAS']; 
+      		/*	if ($item['ETAPASAB'] != '' ) {
+      				echo $item['ETAPASAB'].'<br>';
+      			}
+				if ($item['ETAPASCR'] != '' ) {
+      				echo $item['ETAPASCR'].'<br>';
+      			}
+      			if ($item['ETAPAFINAL'] != '' ) {
+      				echo $item['ETAPAFINAL'];
+      			} */ 
+      		?></td>
+      		<td><?php echo $item['CODIGO']; ?></td>
+      		<td><?php echo $item['DOCINICIO']; ?></td>
+      		<td><?php echo $item['DOCSOPORTE']; ?></td> 
+      		<td>
+<!--      		<a target='_blank' href='http://quasar.pendulum.com.mx:59001/cobranza/aplicacion/credito/?dmacct=--><?php //echo $item['FCCREDITOCARTERA']; ?><!--&user=--><?php //echo $this->claveQuasar; ?><!--'>X1</a>&nbsp;-->
+<!--      		<a target='_blank' href='http://quasar.pendulum.com.mx:59001/el/aplicacion/creditos/credito?dmacct=--><?php //echo $item['FCCREDITOCARTERA']; ?><!--&user=--><?php //echo $this->claveQuasar; ?><!--'>X5</a>&nbsp;-->
+<!--      		<a target='_blank' href='http://quasar.pendulum.com.mx:59001/cas/aplicacion/url/aplicacionExterna/?dmacct=--><?php //echo $item['FCCREDITOCARTERA']; ?><!--&user=--><?php //echo $this->claveQuasar; ?><!--&procedencia=COB'>X1</a>&nbsp;-->
+<!--			<a target='_blank' href='http://quasar.pendulum.com.mx:59001/cas/aplicacion/url/aplicacionExterna/?dmacct=--><?php //echo $item['FCCREDITOCARTERA']; ?><!--&user=--><?php //echo $this->claveQuasar; ?><!--|COB|1&procedencia=EL1'>X5</a>&nbsp;-->
+
+
+<a target='_blank' href='http://quasar.pendulum.com.mx:59001/cas/aplicacion/url/aplicacionExterna/?dmacct=<?php echo $item['FCCREDITOCARTERA']; ?>&user=<?php echo $this->claveQuasar; ?>&procedencia=COB'>X1</a>&nbsp;
+<a target='_blank' href='http://quasar.pendulum.com.mx:59001/cas/aplicacion/url/aplicacionExterna/?dmacct=<?php echo $item['FCCREDITOCARTERA']; ?>&user=<?php echo $this->claveQuasar; ?>|COB|1&procedencia=EL1'>X5</a>&nbsp;
+
+<!-- 
+      		<a target='_blank' href='http://quasar.pendulum.com.mx:59001/cobranza/aplicacion/credito/?dmacct=<?php //echo $item['FCCREDITOCARTERA']; ?>&user=<?php //echo $this->claveQuasar; ?>'>X1</a>&nbsp;
+			<a target='_blank' href='http://quasar.pendulum.com.mx:59001/el/aplicacion/creditos/credito?dmacct=<?php// echo $item['FCCREDITOCARTERA']; ?>&user=<?php //echo $this->claveQuasar; ?>'>X5</a>&nbsp;
+ -->
+			 						 
+      		<?php if($item['PAGODOBLE'] == 'SI'){ ?> 
+      		<a target='_blank' href='http://quantum1.pendulum.com.mx/pendulum/procesoGastos/muestra_pagosdobles.php?dmacct=<?php echo $item['FCCREDITOCARTERA']; ?>&concepto=<?php echo $item['IDCONCEPTO']; ?>&casoid=<?php echo $this->idGasto; ?>&user=<?php echo $this->claveQuasar; ?>' >PD</a>
+      		<?php } ?>
+      		</td>
+    	</tr>
+    	<?php $total += (float)$item['FNIMPORTE']; endforeach; ?>
+  	</tbody>
+</table>
+<?php } else { ?>
+	<p>No hay registros</p>
+<?php } ?>
